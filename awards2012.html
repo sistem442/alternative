@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Alternative 2011 index</title>
+<style type="text/css">
+a {	font-size:0.9em;
+	color:#CC0;
+	}
+.dhtmlgoodies_question{	/* Styling question */
+	/* Start layout CSS */
+	color:#CC0;
+	font-size:0.9em;
+	width:630px;
+	margin-bottom:2px;
+	margin-top:2px;
+	padding-left:2px;
+	background-repeat:no-repeat;
+	background-position:top right;
+	height:40px;
+
+	/* End layout CSS */
+
+	overflow:hidden;
+	cursor:pointer;
+}
+.dhtmlgoodies_answer{	/* Parent box of slide down content */
+	/* Start layout CSS */
+	border:1px solid #CC0;
+	width:600px;
+
+	/* End layout CSS */
+
+	visibility:hidden;
+	height:0px;
+	overflow:hidden;
+	position:relative;
+
+}
+.dhtmlgoodies_answer_content{	/* Content that is slided down */
+	padding:1px;
+	font-size:0.9em;
+	position:relative;
+}
+
+</style>
+<script type="text/javascript">
+/************************************************************************************************************
+Show hide content with slide effect
+Copyright (C) August 2010  DTHMLGoodies.com, Alf Magne Kalleland
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+Dhtmlgoodies.com., hereby disclaims all copyright interest in this script
+written by Alf Magne Kalleland.
+
+Alf Magne Kalleland, 2010
+Owner of DHTMLgoodies.com
+
+************************************************************************************************************/
+
+var dhtmlgoodies_slideSpeed = 10;	// Higher value = faster
+var dhtmlgoodies_timer = 10;	// Lower value = faster
+
+var objectIdToSlideDown = false;
+var dhtmlgoodies_activeId = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_expandMultiple = false; // true if you want to be able to have multiple items expanded at the same time.
+
+function showHideContent(e,inputId)
+{
+	if(dhtmlgoodies_slideInProgress)return;
+	dhtmlgoodies_slideInProgress = true;
+	if(!inputId)inputId = this.id;
+	inputId = inputId + '';
+	var numericId = inputId.replace(/[^0-9]/g,'');
+	var answerDiv = document.getElementById('dhtmlgoodies_a' + numericId);
+
+	objectIdToSlideDown = false;
+
+	if(!answerDiv.style.display || answerDiv.style.display=='none'){
+		if(dhtmlgoodies_activeId &&  dhtmlgoodies_activeId!=numericId && !dhtmlgoodies_expandMultiple){
+			objectIdToSlideDown = numericId;
+			slideContent(dhtmlgoodies_activeId,(dhtmlgoodies_slideSpeed*-1));
+		}else{
+
+			answerDiv.style.display='block';
+			answerDiv.style.visibility = 'visible';
+
+			slideContent(numericId,dhtmlgoodies_slideSpeed);
+		}
+	}else{
+		slideContent(numericId,(dhtmlgoodies_slideSpeed*-1));
+		dhtmlgoodies_activeId = false;
+	}
+}
+
+function slideContent(inputId,direction)
+{
+
+	var obj =document.getElementById('dhtmlgoodies_a' + inputId);
+	var contentObj = document.getElementById('dhtmlgoodies_ac' + inputId);
+	height = obj.clientHeight;
+	if(height==0)height = obj.offsetHeight;
+	height = height + direction;
+	rerunFunction = true;
+	if(height>contentObj.offsetHeight){
+		height = contentObj.offsetHeight;
+		rerunFunction = false;
+	}
+	if(height<=1){
+		height = 1;
+		rerunFunction = false;
+	}
+
+	obj.style.height = height + 'px';
+	var topPos = height - contentObj.offsetHeight;
+	if(topPos>0)topPos=0;
+	contentObj.style.top = topPos + 'px';
+	if(rerunFunction){
+		setTimeout('slideContent(' + inputId + ',' + direction + ')',dhtmlgoodies_timer);
+	}else{
+		if(height<=1){
+			obj.style.display='none';
+			if(objectIdToSlideDown && objectIdToSlideDown!=inputId){
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.display='block';
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.visibility='visible';
+				slideContent(objectIdToSlideDown,dhtmlgoodies_slideSpeed);
+			}else{
+				dhtmlgoodies_slideInProgress = false;
+			}
+		}else{
+			dhtmlgoodies_activeId = inputId;
+			dhtmlgoodies_slideInProgress = false;
+		}
+	}
+}
+
+
+
+function initShowHideDivs()
+{
+	var divs = document.getElementsByTagName('DIV');
+	var divCounter = 1;
+	for(var no=0;no<divs.length;no++){
+		if(divs[no].className=='dhtmlgoodies_question'){
+			divs[no].onclick = showHideContent;
+			divs[no].id = 'dhtmlgoodies_q'+divCounter;
+			var answer = divs[no].nextSibling;
+			while(answer && answer.tagName!='DIV'){
+				answer = answer.nextSibling;
+			}
+			answer.id = 'dhtmlgoodies_a'+divCounter;
+			contentDiv = answer.getElementsByTagName('DIV')[0];
+			contentDiv.style.top = 0 - contentDiv.offsetHeight + 'px';
+			contentDiv.className='dhtmlgoodies_answer_content';
+			contentDiv.id = 'dhtmlgoodies_ac' + divCounter;
+			answer.style.display='none';
+			answer.style.height='1px';
+			divCounter++;
+		}
+	}
+}
+window.onload = initShowHideDivs;
+</script>
+
+<style type="text/css">
+p.MsoNormal {margin-top:0cm;
+margin-right:0cm;
+margin-bottom:10.0pt;
+margin-left:0cm;
+line-height:115%;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";
+}
+</style>
+</head>
+
+<body style="background-color:#000; color:#FFF; font-family:Arial, Helvetica, sans-serif; ">
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16499062-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial Black','sans-serif'; font-size:12.0pt; ">ALTERNATIVE FILM/VIDEO 2012</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">Festival  novog filma i videa / Festival of New Film and Video</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">Dom  kulture </span><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&bdquo;Studentski grad&ldquo; / &bdquo;Student`s City&ldquo; Cultural Center</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">Akademski filmski centar  / Akademic Film Center</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">5 – 9.  12. 2012.</span></p>
+<br />
+<p><strong>List  of Important Cinematic Works of the Festival</strong></p>
+<p>The Festival Jury Members, comprised of professor  Vlada Petrić, Jovan Jovanović and Sava Trifković (Serbia), have included the  following films onto the List of Important Cinematic Works of the Festival  (cited in alphabetical order): </p>
+<p><strong>Conference  notes on film 05, </strong>Norbert Pfaffenbichler, Austria <br />
+  <strong>Gradually, </strong>Benjamin Ramirez Pérez, Germany<strong></strong><br />
+  <strong>Infinity, </strong>Milan Zulić, Serbia <br />
+  <strong>Miss  Candace Hilligoss&rsquo; Flickering Halo, </strong>Fabio  Scacchioli &amp; Vincenzo Core, Italy<br />
+  <strong>Od  do/ From To, </strong>Miranda Herceg, Croatia<br />
+  <strong>Pigs, </strong>Konstantina Kotzamani, Greece<br />
+  <strong>Square  Dance Hypnotist/Hipnotički kvadratni ples, </strong>Allan  Brown, Canada<br />
+  <strong>The  Swimmer, </strong>Salise Hughes, USA<strong></strong><br />
+  <strong>Tudor  Village: A One Shot Deal/Selo Tudor: Kadrirana pogodba, </strong>Rhayne Vermette, Canada </p>
+<p><strong>The Ivan Kaljević Prize</strong></p>
+<p>In  a memory of the early departed author of avant-garde and alternative films Ivan  Kaljevic the award goes to the film:</p>
+<p><strong>Was nicht in die Suppe kommt, geht ins  Klo/Šta ne staviš u supu, otići će niz wc šolju/What You Don&rsquo;t Put Into the  Soup Goes Down the Loo</strong>, Kirsten Burger &amp; Laura Vogel, Switzerland </p>
+<br />
+<br />
+<br />
+<div class="dhtmlgoodies_question"><strong class="dan"><spaN style="text-decoration:underline">FILM AFTER  FILM <br />
+ 30<sup>th</sup> anniversary of the Alternative film/video festival</span></p></span></p>
+</spaN></strong></div>
+<div class="dhtmlgoodies_answer">
+<div>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&nbsp;</span></p>
+ALTERNATIVE  FILM / VIDEO, Festival of New Film and Video, formerly Yugoslavian, then the  ex-Yugoslavian and now a regional and international, launched in 1982 with the  idea to &quot;theoretically define the movement and to show the true values and new creative possibilities in the field of  alternative film (experimental, research, avant-garde, personal film  ...)&quot;, was extended in 1985 to the video art with a clear idea that these two media, so different at the time, have a  future together.</span></p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;"><span class="MsoNormal">In</span>terrupted by  the war in Yugoslavia in the early nineties of the last century, rebuilt in  2003. establishing broken ties and continuing to be a link among the creators  of the ex-Yugoslav space.</p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">Bringing the  region into the European and global integration processes are inevitably led to  the extension of the Festival. Today, an international festival with a focus on  the region, Alternative continue its mission of encouraging and evaluating  alternative film thinking, uncompromise supporting innovative and unbound  audio-visual language of the new digital media.</p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">30 years since  the founding of the festival in Serbia and elsewhere, the movie stops producing  and projecting on film tape. Is the digital future of film have an impact on  the aesthetics and social significance of alternative film and film in general,  and what is his future – are questions that will be addressed through a series  of exhibitions, forums, round tables, workshops, film and digital projection.</p>
+<p align="right" style="margin-bottom:.0001pt;text-align:right;line-height:normal;">            Miodrag  Milošević</p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">&nbsp;</p>
+</div>
+</div>
+<p>The award given to the selected authors is the right to realize 
+  a new film/video produced by the Academic Film Centre (AFC)
+  with full use of all production facilities and technical equipment. 
+  The authors will be provided with accommodation and restaurant 
+  service within the Students&rsquo; City compound for a period of maximum 1 month. </p>
+<br />
+<br />
+<span style="font-weight:bold;"><a href="PDF/AlternativeProgram2012.pdf">ATERNATIVE  FILM / VIDEO FESTIVAL PROGRAM (PDF)</a></span></p>
+</body>
+</html>

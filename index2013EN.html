@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Alternative 2012 index</title>
+<style type="text/css">
+.dhtmlgoodies_question{	/* Styling question */
+	/* Start layout CSS */
+	color:#CC0;
+	font-size:0.9em;
+	width:630px;
+	margin-bottom:2px;
+	margin-top:2px;
+	padding-left:2px;
+	background-repeat:no-repeat;
+	background-position:top right;
+	height:40px;
+
+	/* End layout CSS */
+
+	overflow:hidden;
+	cursor:pointer;
+}
+.dhtmlgoodies_answer{	/* Parent box of slide down content */
+	/* Start layout CSS */
+	border:1px solid #CC0;
+	width:600px;
+
+	/* End layout CSS */
+
+	visibility:hidden;
+	height:0px;
+	overflow:hidden;
+	position:relative;
+
+}
+.dhtmlgoodies_answer_content{	/* Content that is slided down */
+	padding:1px;
+	font-size:0.9em;
+	position:relative;
+}
+
+</style>
+<script type="text/javascript">
+/************************************************************************************************************
+Show hide content with slide effect
+Copyright (C) August 2010  DTHMLGoodies.com, Alf Magne Kalleland
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+Dhtmlgoodies.com., hereby disclaims all copyright interest in this script
+written by Alf Magne Kalleland.
+
+Alf Magne Kalleland, 2010
+Owner of DHTMLgoodies.com
+
+************************************************************************************************************/
+
+var dhtmlgoodies_slideSpeed = 10;	// Higher value = faster
+var dhtmlgoodies_timer = 10;	// Lower value = faster
+
+var objectIdToSlideDown = false;
+var dhtmlgoodies_activeId = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_expandMultiple = false; // true if you want to be able to have multiple items expanded at the same time.
+
+function showHideContent(e,inputId)
+{
+	if(dhtmlgoodies_slideInProgress)return;
+	dhtmlgoodies_slideInProgress = true;
+	if(!inputId)inputId = this.id;
+	inputId = inputId + '';
+	var numericId = inputId.replace(/[^0-9]/g,'');
+	var answerDiv = document.getElementById('dhtmlgoodies_a' + numericId);
+
+	objectIdToSlideDown = false;
+
+	if(!answerDiv.style.display || answerDiv.style.display=='none'){
+		if(dhtmlgoodies_activeId &&  dhtmlgoodies_activeId!=numericId && !dhtmlgoodies_expandMultiple){
+			objectIdToSlideDown = numericId;
+			slideContent(dhtmlgoodies_activeId,(dhtmlgoodies_slideSpeed*-1));
+		}else{
+
+			answerDiv.style.display='block';
+			answerDiv.style.visibility = 'visible';
+
+			slideContent(numericId,dhtmlgoodies_slideSpeed);
+		}
+	}else{
+		slideContent(numericId,(dhtmlgoodies_slideSpeed*-1));
+		dhtmlgoodies_activeId = false;
+	}
+}
+
+function slideContent(inputId,direction)
+{
+
+	var obj =document.getElementById('dhtmlgoodies_a' + inputId);
+	var contentObj = document.getElementById('dhtmlgoodies_ac' + inputId);
+	height = obj.clientHeight;
+	if(height==0)height = obj.offsetHeight;
+	height = height + direction;
+	rerunFunction = true;
+	if(height>contentObj.offsetHeight){
+		height = contentObj.offsetHeight;
+		rerunFunction = false;
+	}
+	if(height<=1){
+		height = 1;
+		rerunFunction = false;
+	}
+
+	obj.style.height = height + 'px';
+	var topPos = height - contentObj.offsetHeight;
+	if(topPos>0)topPos=0;
+	contentObj.style.top = topPos + 'px';
+	if(rerunFunction){
+		setTimeout('slideContent(' + inputId + ',' + direction + ')',dhtmlgoodies_timer);
+	}else{
+		if(height<=1){
+			obj.style.display='none';
+			if(objectIdToSlideDown && objectIdToSlideDown!=inputId){
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.display='block';
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.visibility='visible';
+				slideContent(objectIdToSlideDown,dhtmlgoodies_slideSpeed);
+			}else{
+				dhtmlgoodies_slideInProgress = false;
+			}
+		}else{
+			dhtmlgoodies_activeId = inputId;
+			dhtmlgoodies_slideInProgress = false;
+		}
+	}
+}
+
+
+
+function initShowHideDivs()
+{
+	var divs = document.getElementsByTagName('DIV');
+	var divCounter = 1;
+	for(var no=0;no<divs.length;no++){
+		if(divs[no].className=='dhtmlgoodies_question'){
+			divs[no].onclick = showHideContent;
+			divs[no].id = 'dhtmlgoodies_q'+divCounter;
+			var answer = divs[no].nextSibling;
+			while(answer && answer.tagName!='DIV'){
+				answer = answer.nextSibling;
+			}
+			answer.id = 'dhtmlgoodies_a'+divCounter;
+			contentDiv = answer.getElementsByTagName('DIV')[0];
+			contentDiv.style.top = 0 - contentDiv.offsetHeight + 'px';
+			contentDiv.className='dhtmlgoodies_answer_content';
+			contentDiv.id = 'dhtmlgoodies_ac' + divCounter;
+			answer.style.display='none';
+			answer.style.height='1px';
+			divCounter++;
+		}
+	}
+}
+window.onload = initShowHideDivs;
+</script>
+
+<STYLE id="tmpStyle" type="text/css" disabled="">
+#dani {
+	color:#FC0;
+	
+}
+a{color:#CC0;}
+.dan {
+	color: #CC0;
+}
+</STYLE>
+
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin-top:0cm;
+margin-right:0cm;
+margin-bottom:10.0pt;
+margin-left:0cm;
+line-height:115%;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";
+}
+</style>
+</head>
+
+<body class="MsoNormal" style="background-color: #000; color: #FFF; font-family: Arial, Helvetica, sans-serif;">
+<p><strong>ALTERNATIVE FILM/VIDEO 2013</strong><br />
+Festival of New Film and Video </p>
+<p style="font-size: 20px;">10th till 14th of December 2013</p>
+<p style="color:#FF0">
+<strong>LIST  OF IMPORTANT CINEMATIC WORKS OF THE FESTIVAL</strong></p>
+<p>The Festival Jury Members, comprised of Vassily  Bourikas (Greece) and Andrés Denegri (Argentina) have included the following  films onto the List of Important Cinematic Works of the Festival (cited in  alphabetical order):</p>
+<p><span style="color:#FF0"><strong><em>Buffalo  Death Mask</em></strong><strong>, Mike  Hoolboom, Canada</strong></span><br />
+  Without apparent effort it  shifts from vulnerability to strength, from melancholy to humor and from  personal as well as universal suffering to a comforting and soothing  celebration of memory. Mike Hoolboom's film ultimately created a notion that  probably does not exist in words. What is the opposite of a scar?<br />
+  <br />
+  <span style="color:#FF0"><strong><em>Ellen</em></strong><strong>, Davorin Marc, Slovenia</strong></span><br />
+  With the sharpness and wittiness  that brings in mind the old Yugoslav Anti-film, and in a very short space of  time, Ellen manages to (re)create a concurrent visual system and to  benevolently critique it.<br />
+  <span style="color:#FF0"><strong><em><br />
+  Le  jour a vaincu la nuit / The Day Has Conquered the Night</em></strong><strong>, Jean-Gabriel Périot, France</strong></span><br />
+  An exercise of the portrait that  departs from a cliché that is enriched with small and risky formal decisions to  achieve, finally, a complex social landscape.<br />
+<span style="color:#FF0">  <strong><em><br />
+  Petite  histoire des plateaux abandonnés / Short History of Abandoned Sets</em></strong><strong>, Rä di Martino, Italy</strong></span><br />
+  Cinema has many ways of  colonizing vulnerable countries and its peoples. And some times it abandons  them. Short histories of Forgotten Sets showed us that there is both hope and  beauty even in abandonment.  <br />
+<span style="color:#FF0">  <strong><em><br />
+  The  Residency</em></strong><strong>, Ioannis  Savvidis, Germany / Ireland</strong></span><br />
+  This work, which belongs to the  long tradition of the self-portrait and the diary on video, deployed in a  simple and fresh way a universe that expands beyond its own image and makes  present the mise en scene, that is to say, the real work of the artist in  residence.<br />
+  <span style="color:#FF0"><strong><em><br />
+  Schneesturm  / Snowstorm</em></strong><strong>, Julia  Weißenberg, Germany</strong></span><br />
+  To face the problem of the  digital age is a challenge that generally pushes the artist towards the trap of  digital image itself. In this case, the digital language is put in perspective  from a completely human point of view, portraying the sacrificed and futile  attempt of turning flesh the binary code.</p>
+<p>The Ivan Kaljević Prize<br />
+  <br />
+  In a memory of the early departed author of  avant-garde and alternative films Ivan Kaljevic the award goes to the film:<br />
+<span style="color:#FF0">   <strong><em><br />
+ M.  Tomazo okrvavljena / Bloody M. Tomazo</em></strong><strong>,  Krasimir Dobrev, Bulgaria</strong></span><br />
+  Attentive costume design  combined with raw youtube aesthetics and a penchant for mockery of Balkan  soldierly machismo is what earned this ultra short film the Ivan Kaljeviz  prize. In the case that you do not know Kaljevic then the prize goes to  Kaljevic.</p>
+<p></p>
+The award given to the selected authors is the right to realize 
+  a new film/video produced by the Academic Film Centre (AFC)
+  with full use of all production facilities and technical equipment. 
+  The authors will be provided with accommodation and restaurant 
+  service within the Students&rsquo; City compound for a period of maximum 1 month. 
+</body>
+</html>

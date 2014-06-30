@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Alternative 2012 program</title>
+<style type="text/css">
+.dhtmlgoodies_question{	/* Styling question */
+	/* Start layout CSS */
+	color:#FFF;
+	font-size:0.9em;
+	width:630px;
+	margin-bottom:2px;
+	margin-top:2px;
+	padding-left:2px;
+	background-repeat:no-repeat;
+	background-position:top right;
+	height:40px;
+
+	/* End layout CSS */
+
+	overflow:hidden;
+	cursor:pointer;
+}
+.dhtmlgoodies_answer{	/* Parent box of slide down content */
+	/* Start layout CSS */
+	border:1px solid #CC0;
+	width:600px;
+
+	/* End layout CSS */
+
+	visibility:hidden;
+	height:0px;
+	overflow:hidden;
+	position:relative;
+
+}
+.dhtmlgoodies_answer_content{	/* Content that is slided down */
+	padding:1px;
+	font-size:0.9em;
+	position:relative;
+}
+
+</style>
+<script type="text/javascript">
+/************************************************************************************************************
+Show hide content with slide effect
+Copyright (C) August 2010  DTHMLGoodies.com, Alf Magne Kalleland
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+Dhtmlgoodies.com., hereby disclaims all copyright interest in this script
+written by Alf Magne Kalleland.
+
+Alf Magne Kalleland, 2010
+Owner of DHTMLgoodies.com
+
+************************************************************************************************************/
+
+var dhtmlgoodies_slideSpeed = 10;	// Higher value = faster
+var dhtmlgoodies_timer = 10;	// Lower value = faster
+
+var objectIdToSlideDown = false;
+var dhtmlgoodies_activeId = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_expandMultiple = false; // true if you want to be able to have multiple items expanded at the same time.
+
+function showHideContent(e,inputId)
+{
+	if(dhtmlgoodies_slideInProgress)return;
+	dhtmlgoodies_slideInProgress = true;
+	if(!inputId)inputId = this.id;
+	inputId = inputId + '';
+	var numericId = inputId.replace(/[^0-9]/g,'');
+	var answerDiv = document.getElementById('dhtmlgoodies_a' + numericId);
+
+	objectIdToSlideDown = false;
+
+	if(!answerDiv.style.display || answerDiv.style.display=='none'){
+		if(dhtmlgoodies_activeId &&  dhtmlgoodies_activeId!=numericId && !dhtmlgoodies_expandMultiple){
+			objectIdToSlideDown = numericId;
+			slideContent(dhtmlgoodies_activeId,(dhtmlgoodies_slideSpeed*-1));
+		}else{
+
+			answerDiv.style.display='block';
+			answerDiv.style.visibility = 'visible';
+
+			slideContent(numericId,dhtmlgoodies_slideSpeed);
+		}
+	}else{
+		slideContent(numericId,(dhtmlgoodies_slideSpeed*-1));
+		dhtmlgoodies_activeId = false;
+	}
+}
+
+function slideContent(inputId,direction)
+{
+
+	var obj =document.getElementById('dhtmlgoodies_a' + inputId);
+	var contentObj = document.getElementById('dhtmlgoodies_ac' + inputId);
+	height = obj.clientHeight;
+	if(height==0)height = obj.offsetHeight;
+	height = height + direction;
+	rerunFunction = true;
+	if(height>contentObj.offsetHeight){
+		height = contentObj.offsetHeight;
+		rerunFunction = false;
+	}
+	if(height<=1){
+		height = 1;
+		rerunFunction = false;
+	}
+
+	obj.style.height = height + 'px';
+	var topPos = height - contentObj.offsetHeight;
+	if(topPos>0)topPos=0;
+	contentObj.style.top = topPos + 'px';
+	if(rerunFunction){
+		setTimeout('slideContent(' + inputId + ',' + direction + ')',dhtmlgoodies_timer);
+	}else{
+		if(height<=1){
+			obj.style.display='none';
+			if(objectIdToSlideDown && objectIdToSlideDown!=inputId){
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.display='block';
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.visibility='visible';
+				slideContent(objectIdToSlideDown,dhtmlgoodies_slideSpeed);
+			}else{
+				dhtmlgoodies_slideInProgress = false;
+			}
+		}else{
+			dhtmlgoodies_activeId = inputId;
+			dhtmlgoodies_slideInProgress = false;
+		}
+	}
+}
+
+
+
+function initShowHideDivs()
+{
+	var divs = document.getElementsByTagName('DIV');
+	var divCounter = 1;
+	for(var no=0;no<divs.length;no++){
+		if(divs[no].className=='dhtmlgoodies_question'){
+			divs[no].onclick = showHideContent;
+			divs[no].id = 'dhtmlgoodies_q'+divCounter;
+			var answer = divs[no].nextSibling;
+			while(answer && answer.tagName!='DIV'){
+				answer = answer.nextSibling;
+			}
+			answer.id = 'dhtmlgoodies_a'+divCounter;
+			contentDiv = answer.getElementsByTagName('DIV')[0];
+			contentDiv.style.top = 0 - contentDiv.offsetHeight + 'px';
+			contentDiv.className='dhtmlgoodies_answer_content';
+			contentDiv.id = 'dhtmlgoodies_ac' + divCounter;
+			answer.style.display='none';
+			answer.style.height='1px';
+			divCounter++;
+		}
+	}
+}
+window.onload = initShowHideDivs;
+</script>
+
+<STYLE id="tmpStyle" type="text/css" disabled="">
+#dani {
+	color:#FC0;
+	
+}
+a{color:#CC0;}
+.dan {
+	color: #FF0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 18px;
+}
+</STYLE>
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin-top:0cm;
+margin-right:0cm;
+margin-bottom:10.0pt;
+margin-left:0cm;
+line-height:115%;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";
+}
+p.MsoNoSpacing {
+margin:0cm;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:"Times New Roman","serif";
+}
+li.MsoNormal {
+margin-top:0cm;
+margin-right:0cm;
+margin-bottom:10.0pt;
+margin-left:0cm;
+line-height:115%;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";
+}
+-->
+</style>
+</head>
+
+<body style="background-color:#000; color:#FFF; font-family:Arial, Helvetica, sans-serif; ">
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16499062-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<p><strong>ALTERNATIVE FILM/VIDEO 2013</strong><br />
+Festival Novog Filma i Videa</p>
+<p style="color: #FF0; font-size: 20px;">10-14. decembar 2013.</p>
+<p class="dan"><strong>PROGRAM</strong></p>
+<p><span class="dan"><strong>10. </strong>|<strong> Utorak | Tuesday</strong></span><strong> </strong></p>
+<p><strong>13:00</strong> | Mala sala | Small Theatre  <br />
+  <em>Retrospektiva  / Retrospective </em><br />
+  <strong>ALTERNATIVE  FILM-VIDEO 2012.</strong><br />
+  Lista  značajnih ostvarenja Festivala / List of Important Works of the Festival</p>
+<p><strong>The Swimmer  /</strong>Plivač<strong>, </strong>Salise Hughes, SAD, 4 min<br />
+  <strong>Gradually, </strong>Benjamin Ramirez Pérez, Nemačka, 6 min<strong></strong><br />
+  <strong>Tudor  Village: A One Shot Deal </strong>/Selo Tudor: kadrirana pogodba<strong>, </strong>Rhayne  Vermette, Kanada, 5 min<strong></strong><br />
+  <strong>Square  Dance Hypnotist /</strong>Hipnotički kvadratni ples<strong>, </strong>Allan Brown,  Kanada, 17 min<br />
+  <strong>Infinity, </strong>Milan Zulić, Srbija, 3 min <br />
+  <strong>Pigs, </strong>Konstantina Kotzamani, Grčka, 13 min<br />
+  <strong>Miss  Candace Hilligoss&rsquo; Flickering Halo, </strong>Fabio Scacchioli  &amp; Vincenzo Core, Italija, 14 min<br />
+  <strong>Conference  Notes On Film 05, </strong>Norbert Pfaffenbichler, Austrija, 8 min<strong><em> <br />
+    </em>Od do, </strong>/From  - to,<strong> </strong>Miranda Herceg, Hrvatska,  10 min<br />
+  <strong>Was nicht in die suppe kommt, geht ins klo </strong>/Šta ne staviš u supu, otići će  niz wc-šolju, Kirsten Burger &amp; Laura Vogel, Switzerland, 24 min. - <em>Nagrada &ldquo;Ivan Kaljević&rdquo; </em></p>
+<p>&nbsp;</p>
+<p><strong>15:00</strong> | Mala sala | Small Theatre  <br />
+  <strong>ALTERNATIVE  NARRATIVE</strong></p>
+<p><strong>Amnezijak  na plaži </strong>/Amnesiac on the Beach<em>, </em>Dalibor Barić, 2013, Croatia, 23 min.<br />
+  <strong>Grizzly</strong><em>,</em> Arved Lindau, 2013, Germany, 9 min.<br />
+  <strong>Cats  Lost in Space</strong><em>,</em> Eva Münnich, 2012, Germany, 13 min.<br />
+  <strong>Porodično  okupljanje </strong>/Family Reunion<em>,</em> Iva Musović, 2013, Slovenia, 15 min.<br />
+  <strong>Tabatô</strong><em>,</em> João Viana, 2013, Portugal/Guinea-Bissau, 13 min.</p>
+<p><strong>17:00</strong> | Mala sala |  Small Theatre              <br />
+  <em>Strukturalni  film / Structural Film</em><br />
+  <strong>Slobodan  Šijan – Filmski letak br. 1, jun 1976.</strong><br />
+  <strong>Dijagram  – ANTIFILM, MI I DRUGI / </strong>Diagram – ANTIFILM, US  &amp; THEM<br />
+  Uvodna reč / Introduction by Slobodan Šijan</p>
+<p><strong>Prije  podne jednog fauna </strong>/ Morning of a Faun, Tomislav  Gotovac, 1963, 8 min.<br />
+  <strong>Dvori</strong><strong>šte </strong>/ Courtyard,  Mihovil Pansini, 1963, 14 min.<br />
+  <strong>K3, ili čisto nebo bez oblaka </strong>/ K3, or cloudless sky, Mihovil  Pansini, 1963, 3 min.<br />
+  <strong>Scusa Signorina</strong>, Mihovil Pansini, 1963, 6 min.<br />
+  <strong>Pravac (Stevens </strong><strong>– Duke) </strong>/  Line (Stevens – Duke),<strong> </strong> Tomislav Gotovac,  1964, 10 min. <br />
+  <strong>Kružnica (Jutkevič – Count) </strong>/ Circle (Jutkevič – Count), Tomislav Gotovac, 1964, 12 min. <br />
+  <strong>Zahod </strong>/ W.C., Mihovil Pansini, 1964, 18 min.</p>
+<p><strong>19:00</strong> | Galerija | Gallery<br />
+  <em>Izložba  / Exhibition – Otvaranje / Opening</em><br />
+  <em>Filmsko-fotografske  instalacije / Film-photograph installations</em><br />
+  <strong>THE TORSO</strong><br />
+  <strong>_goldmann.strohmann.subotic_</strong></p>
+<p><strong>19:45</strong> | Velika Galerija | Main Theatre Gallery <br />
+  <em>Strukturalni film /  Structural Film</em><br />
+  <em>Izložba  / Exhibition</em><strong> </strong><br />
+  <strong>ANTIFILM  I STRUKTURALNI FILM U BEOGRADU /</strong>ANTIFILM AND  STRUCTURAL FILM IN BELGRADE<strong></strong><br />
+  Izložbu pripremili / Exhibition prepared by  Miodrag Milošević &amp; Nikola Đurić </p>
+<p><strong>20:00</strong> | Velika sala | Main Theatre <br />
+  Expanded Cinema performans<br />
+  Izvanredni Bob<br />
+  <strong>PEOPLEMETER<br />
+</strong>muzika: WoO i Bob</p>
+<p><strong>20:45</strong> | Velika sala | Main Theatre <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #1</strong></p>
+<p><strong>Binary  Pitch</strong>, Vladislav Knežević, 2013, Croatia, 7 min.<br />
+  <strong>During  the Day My Vision is Perfect</strong>, Benjamin Ramirez Pérez,  2013, Germany, 10 min.<br />
+  <strong>Charade</strong>, Salise Hughes, 2012, USA, 9 min.<br />
+  <strong>Spectrography  of a Battle</strong>, Fabio Scacchioli &amp; Vincenzo Core,  2012, Italy, 4 min.<br />
+  <strong>Funny  Games Ghost</strong>, Stefan Hafner &amp; Karen Hammer,  2012, Austria, 10 min.<br />
+  <strong>Petite  histoire des plateaux abandonnés </strong>/Short History of  Abandoned Sets/, Rä di Martino, 2012, Italy, 8 min.<br />
+  <strong>La  résurrection des natures mortes </strong>/Living Still Life/,  Bertrand Mandico, 2012, France/Belgium/Germany, 15 min.<br />
+  <strong>And  Changing Your Alarm Clock …</strong>, Sasha Litvintseva,  2012, UK, 3 min.<br />
+  <strong>The  Residency</strong>, Ioannis Savvidis, 2012, Germany/Ireland,  25 min.</p>
+<p>&nbsp;</p>
+<p class="dan"><strong>11. </strong>| <strong>Sreda </strong>|<strong> Wednesday  </strong></p>
+<p><strong>12:00</strong> | Studio 26 <br />
+  <em>Filmska radionica / Film Workshop</em><br />
+  <strong>16MM LOOP MAKING WORKSHOP, WITH BASEMENT FILMS </strong><br />
+Radionicu vodi / Workshop lead by Michelle  Mellor<strong></strong></p>
+<p><strong>13:00</strong> | Mala sala | Small Theater  <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #1</strong></p>
+<p><strong>15:00</strong> | Mala sala | Small Theatre  <br />
+  <em>Promocija  zbornika / Presentation of an Antology</em><br />
+  Branisav Miltojević <strong></strong><br />
+  <strong>OD  AMATERSKOG DO ALTERNATIVNOG FILMA /</strong>FROM  AMATEUR TO ALTERNATIVE FILM<br />
+  U razgovoru učestvuju Severin Franić i  autor / Participants:  Severin Franic and  the author<br />
+  Projekcija filma/Film Show <br />
+  <strong>Poljana </strong>/The Field/, Radoslav Vladić, 1978, 11 min.</p>
+<p><strong>17:00 </strong>| Mala sala |  Small Theatre  <br />
+  <em>Strukturalni film /  Structural Film</em><br />
+  <strong>STRUKTURALNI  FILM U BEOGRADU / </strong>STRUCTURAL FILM IN BELGRADE<strong></strong><br />
+  Uvodna reč / Introduction by Miodrag Milošević</p>
+<p><strong>Kružnica (Jutkevič – Count)</strong> / Circle (Jutkevič – Count), Tomislav Gotovac, 1964, 12 min. <br />
+  <strong>Vrt  sa stazama što se račvaju </strong>/The garden with paths that bifurcate/, Slobodan  Šijan, 1971, 4 min.<strong> </strong><br />
+  <strong>H, </strong>Vjekoslav  Nakić, 1972, 5 min.<strong></strong><br />
+  <strong>Putovanje</strong> /The Journey/, Bojana Vujanović, 1972, 5 min.<br />
+  <strong>Samoglasnici</strong> /Vowels/, Nikola Đurić, 1973, 10 min.<br />
+  <strong>Izdah</strong> /Expiration/,<strong> </strong>Ivan Obrenov, 1976,  12 min.<br />
+  <strong>Kuća </strong>/The House/, Radoslav  Vladić, 1977, 9 min.<br />
+  <strong>Praznik</strong> /Holiday/, Bojan Jovanović, 1983, 11 min.<strong></strong><br />
+  <strong>Lična  disciplina</strong> /Personal Discipline/, Miroslav-Bata Petrović i Julijana Terek, 1983, 30 min.<strong> </strong><br />
+  <strong>Circle (Remake)</strong>, Antonio G. Lauer (Tomislav  Gotovac), 2006, 23 min </p>
+<p>&nbsp;</p>
+<p><strong>19:30</strong> | Mala sala | Small Theatre  <br />
+  <strong>CONTEMPORARY EXPERIMENTAL FILM FROM ARGENTINA / </strong>SAVREMENI ARGENTINSKI  EKSPERIMENTALNI FILM <br />
+  Predstavlja  / Presented by Andrés Denegri<strong></strong></p>
+<p><strong>Sobre  Belgrado </strong>/Over Belgrade/, Andrés  Denegri,  2011, 4 min, Super 8. <br />
+  <strong>Aula  magna</strong>,  Andrés Denegri, 2013, 7 min, Super 8.<strong> </strong><br />
+  <strong>Espectro</strong>, Sergio Subero, 2010, 9 min, Super 8. <br />
+  <strong>Oficiales  de reserva </strong>/Reserve Officers/, Gonzalo  Egurza,  2012, 3 min, Super 8.<br />
+  <strong>Focus</strong>, Pablo Marín,  2008, 4 min, Super 8.<br />
+  <strong>Denkbilder</strong>, Pablo Marin, 2013, 5 min, 16mm. </p>
+<p>&nbsp;</p>
+<p><strong>21:00</strong> | Velika sala | Main Theatre <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #2</strong></p>
+<p><strong>Un  instant de verite </strong>/A Moment of Truth/, Gisèle  Rapp-Meichler, 2013, France, 7 min.<br />
+  <strong>Surrounded</strong>, Arne Körner, 2013, Germany, 10 min.<br />
+  <strong>Bernoulli  Trial or: How Nothing Stays the Same in Two Different Minds</strong>, Željko Vukičević, 2012, UK, 5 min.<br />
+  <strong>Bauk  /</strong> Spectre, Ibro Hasanović, 2012, Croatia, 8 min.<br />
+  <strong>Moje  lepe noge </strong>/<strong> </strong>My Beautiful Legs<strong>,</strong> Coralie Girard, 2013, Slovenia, 11 min.<br />
+  <strong>Gowanus  Canal,</strong> Sarah J. Christman, 2013, USA, 7 min.<br />
+  <strong>The  Smell of Oil and Cheap Perfume,</strong> Allan Brown, 2013,  Canada, 10 min.<br />
+  <strong>Schneesturm </strong>/<strong> </strong>Snowstorm, Julia Weißenberg, 2013,  Germany, 11 min.<br />
+  <strong>Grad </strong>/ The City, Milica Jovčić &amp; Nenad Ćosić,  2013, Serbia, 3 min.<br />
+  <strong>Vision  of Traces, </strong>Johannes Gierlinger, 2012, Austria, 1  min.<br />
+  <strong>Prevrtači  osvajači </strong>/ Market Conquerors, Petar D.  Aranđelović, 2013, Serbia, 10 min.<br />
+  <strong>Comparing  Now and Then</strong><em>,</em> Nina Wiesnagrotzki, 2012, Germany, 6 min.</p>
+<p><strong>22:30</strong> | Velika sala | Main Theatre &amp;  Klub | Club <br />
+  <em>Muzika  i pokret<strong> / </strong>M</em><em>usic &amp; Movement</em><br />
+  <strong>Autopsia Short Films</strong>, DVD Illuminating  Technologies, 2010.</p>
+<p>&nbsp;</p>
+<p><span class="dan"><strong>12. </strong>| <strong>Četvrtak </strong>|<strong> Thursday</strong></span><strong> </strong></p>
+<p><strong>10:00</strong> | Sala za sastanke | Conference Hall <br />
+  <strong><em>2. Alternative film-video  istraživački forum</em></strong><em> / <strong>2nd  Alternative Film-Video Research Forum</strong></em><br />
+  <strong>FRAGMENTATION</strong><br />
+  Učesnici / Participants: Bryan Konefsky, University of New  Mexico; Nevena Daković, Fakultet dramskih umetnosti /  Faculty of Dramatic Arts Belgrade; Miriam De Rosa, Università Cattolica del  Sacro Cuore-Milano; Branka Benčić, Independent Curator, Zagreb; Enrico  Camporesi, University Sorbonne Nouvelle-Paris 3/University of Bologna; James  Snazell, Edge Hill University; Terri Francis, Yale University/University of  Pennsylvania; Kamila Kuc, Kingston  University/Brighton University; Bruce Posner, Independent Curator, New  Hampshire; Lucia Aspesi, Hangar Bicocca, Milan; Adeena Mey, University of Lausanne/ECAL.<strong> </strong><br />
+Moderator  Foruma / Curated by Greg DeCuir, Jr. </p>
+<p><strong>13:00</strong> | Mala sala | Small Theatre  <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #2</strong></p>
+<p><strong>15:00</strong> | Mala sala | Small Theatre  <br />
+  Vassily Bourikas  predstavlja / presents <br />
+  Á<strong>nak Araw</strong>/Αlbino<strong>, </strong>Gym Lumbera<strong>, </strong>Philippines/USA,  2013, 70 min. </p>
+<p><strong>17:00</strong> | Mala sala |  Small Theatre  <br />
+  Australian Alternative film / Australijski  alternativni film<br />
+  <strong>AN  OZ HYSTERY: SAMPLING THE PAST.</strong><br />
+  Uvodna reč / Introduction by Dirk de Bruyn</p>
+<p><strong>Fun Radio</strong>, Nigel Buesst, 1962-3, 5min.<br />
+  <strong>Leading  Ladies,</strong> Lindsey  Martin, 1975, 8 min.<br />
+  <strong>Contemplation  of the Rose, </strong>Michael  Lee,&nbsp;1977, 9 min. <strong></strong><br />
+  <strong>Zoomfilm</strong> (excerpt),&nbsp;Dirk de Bruyn,  1977, 5 min.<br />
+  <strong>Discs</strong>, Dirk de Bruyn,&nbsp; 1979, 3  min.<br />
+  <strong>Dolls,</strong> Paul Fletcher, 1980, 5 min.<br />
+  <strong>Excerpt</strong>, Chris Knowles, 1983,&nbsp;6  min.<br />
+  <strong>Exacuate,</strong>&nbsp;Michael Buckley/ Sue  McCauley, 1984, 5 min.              <br />
+  <strong>Morena, </strong>Marie Craven, 1987,&nbsp;4  min.<br />
+  <strong>Short  Lives</strong> (excerpt),&nbsp;Neil Taylor,&nbsp;1980-90, 5 min.<br />
+  <strong>E.G., </strong>Virginia Hilyard,  1990, 8 min.<br />
+  <strong>Traum  A Dream,</strong>&nbsp;Dirk  de Bruyn, 2003, 7 min.<br />
+  <strong>KeepinTime  Abstract, </strong>Steven  McIntyre, 2005, 3 min.<br />
+  <strong>Time  Ball,</strong>&nbsp;Marcia  Jane, 2008, 6 min.<br />
+  <strong>WAP, </strong>Dirk de Bruyn,&nbsp;2011,  10 min. </p>
+<p><strong>19:00</strong>&nbsp;|&nbsp;Mala sala&nbsp;|&nbsp;Small Theatre&nbsp;<br />
+  <em>Strukturalni film / Structural Film</em> <br />
+  <strong>ARITHMETICA NATURALIS</strong> <br />
+  <em>The Nature in Austrian Structural Film</em> <br />
+  Uvodna&nbsp;reč /&nbsp;Introduction by Gerald  Weber</p>
+<p><strong>3/60 Bäume im Herbst</strong>, Kurt Kren, 1960, 5 min. (16mm)<br />
+  <strong>Im Freien</strong>,  Albert Sackl, silent, 2012, 23 min. (35mm)<br />
+  <strong>STATE OF FLUX – Wave#3</strong>, Rainer Gamsjäger, 2009, 4 min. (video)<br />
+  <strong>i.e. [site 01 – isole eolie]</strong>, Lotte Schreiber, 8 min. 2004 (video)<br />
+  <strong>37/78 Tree again</strong>,  Kurt Kren, 4 min, silent 1978 (16mm)<br />
+  <strong>Vertigo Rush</strong>,  Johann Lurf, 19 min. 2007 (35mm)<br />
+  <strong>Arnulf Rainer</strong>,  Peter Kubelka, 7 min. 1960 (35mm)</p>
+<p><strong>21:00</strong> | Velika sala | Main Theatre <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #3</strong></p>
+<p><strong>Portrét  I,</strong> Jake Barningham, 2013, USA, 7 min.<br />
+  <strong>Myth, </strong>Spiros Alidakis, 2013, Greece, 19 min.<br />
+  <strong>Sky  Lines,</strong> Nadine Poulain, 2013, Serbia, 10  min.<br />
+  <strong>Three  to Four,</strong> Ben Thompson, 2011, UK, 7 min.<br />
+  <strong>Ellen, </strong>Davorin Marc, 2013, Slovenia, 2 min.<br />
+  <strong>Displacement,</strong> Liliana Resnick, 2012, Croatia, 7 min.<br />
+  <strong>Papierschnitzel,</strong> Nemanja Lađić, 2013, Serbia, 8 min.<br />
+  <strong>Razglednice </strong>/ Postcards, Ana Hušman, 2013, Croatia, 23 min.</p>
+<p><strong>22:30</strong> | Velika sala | Main Theatre &amp;  Klub | Club <br />
+  <em>Muzika  i pokret<strong> / </strong>M</em><em>usic &amp; Movement</em><br />
+  <strong>Narcis  i Eho</strong>, Saša Radojević, 2011, 62 min.</p>
+<p>&nbsp;</p>
+<p><span class="dan"><strong>13. </strong>| Petak | Friday</span>  </p>
+<p><strong>10:00</strong> | Sala za sastanke | Conference Hall <br />
+  Okrugli sto / Round Table Discussion<br />
+  <strong>STRUKTURALNI FILM </strong>/ STRUCTURAL FILM<strong></strong><br />
+  Učestvuju  / Participants: Slobodan Šijan, Božidar Zečević, Diana  Nenadić, Jovan Jovanović, Gerald Weber, Sebestyén Kodolányi,  Miroslav Petrović, Vassily Bourikas, Andrés Denegri .....<br />
+Moderator / Curated by Miodrag Milošević </p>
+<p><strong>13:00</strong> | Mala sala | Small Theatre  <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #3</strong></p>
+<p><strong>15:00</strong> | Mala sala |  Small Theatre  <br />
+  <strong>KINO  UMJETNIKA / CINEMA OF ARTISTS </strong><br />
+  Recentna produkcija filmova umjetnika u  Hrvatskoj /Recent production of films by Croatian artists<br />
+  Uvodna reč / Introduction by Branka Benčić</p>
+<p><strong>Spring</strong>, Damir  Očko, 2012, 20min. <br />
+  <strong>K17</strong>, Zlatko Kopljar, 2012, 11 min.<br />
+  <strong>Lost Memories from These Days</strong>, David Maljković, 2006,  7 min.<br />
+  <strong>Post  festum</strong>, Dan Oki, 2012, 5  min.<br />
+  <strong>In  War and Revolution</strong>, Ana Bilankov, 2011, 15 min.<br />
+  <strong>Staging  Actors Staging Beliefs</strong>, Renata Poljak, 2011, 12 min.</p>
+<p>&nbsp;</p>
+<p><strong>17:00</strong> | Mala sala | Small Theatre  <br />
+  <em>Autorska prezentacija / Author&rsquo;s  presentation </em><br />
+  Works  on video by Andrés Denegri<br />
+  <strong>THOSE VOICES</strong><br />
+  Predstavlja  / Presented by Andrés Denegri<strong></strong></p>
+<p><strong>Cuando Vuelvas vamoa a ir a  comer a Cantón</strong> / When you come back, will go to have diner to Cantón, Andrés Denegri, 2001, 2  min.<br />
+  <strong>Uyuni</strong>, Andrés Denegri,  2005, 8 min.<br />
+  <strong>Llueve en Mar del Plata</strong> /It&rsquo;s raining in  Mar del Plata, Andrés Denegri, 2011, 13 min. Made during an artist residence at  Academic Film Center <br />
+  <strong>Dejar Belgrado</strong> / Leaving  Belgrade, Andrés Denegri, Gustavo Galuppo and Hernán Khourián, 2013, 14 min.</p>
+<p>&nbsp;</p>
+<p><strong>19:00</strong> | Mala sala | Small Theatre  <br />
+  <em>Autorska prezentacija / Author presents</em><br />
+  <strong>KARPO  GODINA </strong><br />
+  Rekonstruisani eksperimentalni filmovi /  Reconstructed Experimental Films<br />
+  Uvodna reč / Introduction by Karpo Godina<br />
+  <br />
+  <strong>Pes</strong> / Dog, Karpo Godina, Mario Uršić, 1965,  35mm (originally 8mm), 1.37, bw, 8' (18fps), no dialogues <br />
+  <strong>Divjad</strong> / Game, Karpo Godina, Jure Pervanje, 1965, 35mm (originally 8mm), 1.37, bw, 6'  (18fps), no dialogues <br />
+  <strong>A.P.</strong> / Anno Passato, Karpo Godina, 1966, 35mm (originally 8mm), 1.37, bw, 5' (18fps), no  dialogues </p>
+<p><strong>21:00</strong> | Velika sala | Main Theatre <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #4</strong></p>
+<p><strong>A  Woman on the Trapeze</strong>, Iván Marino, 2012, Spain, 7  min.<br />
+  <strong>Party  Island,</strong> Neil Beloufa, 2012, France, 9 min.<br />
+  <strong>Buffalo  Death Mask,</strong> Mike Hoolboom, 2013, Canada, 23 min.<br />
+  <strong>Lugares  fronterizos (Hogar) </strong>/ Border Locations (Home), Blanca Giménez, 2013, Spain, 10 min.<br />
+  <strong>M.  Tomazo okrvavljena </strong>/ Bloody M. Tomazo, Krasimir  Dobrev, 2013, Bulgaria, 2 min.<br />
+  <strong>Le  jour a vaincu la nuit </strong>/ The Day Has Conquered the Night,<strong> </strong>Jean-Gabriel Périot, 2013, France, 28 min.         <strong> </strong></p>
+<p><strong>22:30</strong> | Velika sala | Main Theatre &amp;  Klub | Club <br />
+  <em>Muzika  i pokret<strong> / </strong>M</em><em>usic &amp; Movement</em><br />
+  <strong>Azotara</strong>, Ada Kobusiewicz, 2013, 11 min.<br />
+  <strong>Iščezla  Albertina</strong>, Puriša Đorđević, Miodrag Milošević,  Miloš Sofrenović, 2012, 65 min.<strong></strong></p>
+<p class="dan"><strong>14. </strong>| Subota | Saturday</p>
+<p><strong>10:00</strong> | Sala za sastanke | Conference Hall <br />
+  Okrugli sto / Round Table Discussion<br />
+  <strong>ALTERNATIVNI FILM U  REGIONU </strong>/ ALTERNATIVE FILM IN THE REGION<strong></strong><br />
+  Učestvuju / Participants: Karpo  Godina, Vassily Bourikas, Andrés Denegri,  Diana Nenadić, Branka Benčić, Gerald Weber, Sebestyén Kodolányi, Zoran Saveski, Greg  DeCuir .....<br />
+Moderator / Curated by Miodrag Milošević </p>
+<p><strong>13:00</strong> | Mala sala | Small Theatre  <br />
+  <em>Konkurencija  / Competition </em><br />
+  <strong>PROGRAM  #4</strong></p>
+<p><strong>15:00</strong> | Mala sala | Small Theatre  <br />
+  <strong>HAPPINESS IS A WARM PROJECTOR /</strong> SREĆA JE VRUĆI PROJEKTOR<strong></strong><br />
+  Selected Works from the Festival Experiments  in Cinema, Albuquerque,  New Mexico / Odabrani filmovi sa  festivala Experiments in Cinema, Albuquerque, New Mexico<br />
+  Uvodna reč / Introduction by Brayan  Konefski</p>
+<p><strong>A Recipe for Making Cameraless Computational Video: American Style </strong>by Jolene Mok,<br />
+  4min, 2012, Hong Kong <br />
+  <strong>Walking Under the Sun </strong>by Diana Fonseca, 3.5min, 2007 Cuba<br />
+  <strong>Speechless </strong>by Scott Stark, 13min, 2008 USA <br />
+  <strong>1/48 </strong>by  Jorge Lorenzo, 1/24 second, 2007 Mexico <br />
+  <strong>Vienna In The Desert </strong>by Wago Kreider, 4.5min, 2007 USA <br />
+  <strong>Chromatic Cocktail 180 Proof </strong>(3D) by Kerry Laitala, 8min, 2011 USA <br />
+  <strong>How To Draw Clouds </strong>by Salise Hughes, 2min, 2010 USA <br />
+  <strong>Dance of the Deviant </strong>by Ben Popp, 2min, 2009 USA <br />
+  <strong>Descartado </strong>by Irene Collingles, 6min, 2011, Spain <br />
+  <strong>Splice Lines </strong>by Clint Enns, 1 minute, 2012,Canada <br />
+  <strong>5 Windows in the Attic </strong>by Deron Williams, 9.5 minutes, 2012, USA <br />
+  <strong>Lloyd Blankfein Must Die </strong>by Charles Lum, 3min, 2010, USA <br />
+  <strong>Compost Confidential </strong>by Caryn Cline, 4 minutes, 2012, USA <br />
+  <strong>Eleven Forty Seven </strong>by Marika Borgeson, 11.75min, 2012 USA </p>
+<p>&nbsp;</p>
+<p><strong>17:00</strong> | Mala sala |  Small Theatre  <br />
+  <strong>SWISS MADE SHORTS </strong>/KRATKI  FILMOVI IZ ŠVAJCARSKE<br />
+  Uvodna  reč / Introduction by Kyros Kikos</p>
+<p><strong>Not Swiss Made</strong>,  Apiyo Amolo, 2012, 3 min.<br />
+  <strong>Je suis une bombe</strong> / I Am Am Bomb, Elodie Pong, 2006, 7 min<br />
+  <strong>Mandolinenfieber </strong>/ Mandolin Fever, <a name="_GoBack" id="_GoBack"></a>Kyros Kikos, CH/GR 2006, 3  min<br />
+  <a name="Dst[0][0:2:0:2]" id="Dst[0][0:2:0:2]"></a><a name="Dst[0][4:7:4:6]" id="Dst[0][4:7:4:6]"></a><a name="Dst[0][9:13:8:11]" id="Dst[0][9:13:8:11]"></a><a name="Dst[0][16:18:14:16]" id="Dst[0][16:18:14:16]"></a><a name="Dst[0][20:25:18:24]" id="Dst[0][20:25:18:24]"></a><a name="Dst[0][27:31:26:29]" id="Dst[0][27:31:26:29]"></a><a name="Dst[0][34:36:32:34]" id="Dst[0][34:36:32:34]"></a><a name="Dst[0][38:41:36:36]" id="Dst[0][38:41:36:36]"></a><a name="Dst[0][43:48:38:43]" id="Dst[0][43:48:38:43]"></a><a name="Dst[0][50:56:45:52]" id="Dst[0][50:56:45:52]"></a><a name="Dst[0][58:60:54:59]" id="Dst[0][58:60:54:59]"></a><a name="Dst[0][62:70:61:70]" id="Dst[0][62:70:61:70]"></a><a name="Dst[0][72:78:75:81]" id="Dst[0][72:78:75:81]"></a><strong>After</strong>, Pauline Julier, 2012, 9 min.<br />
+  <strong>Week End</strong>,  Thomas Galler, 2008, 17 min.<br />
+  <strong>Super Boost</strong>,  Jonas Meier, 2013, Jonas Meier, 3 min.<br />
+  <strong>Myself As Popfeminist-Artist. 5. Confrontation-Dress:  Astrofeminist</strong>, Ariane  Andereggen, 2010, 8 min.<br />
+  <strong>Lauberhornrennen im sommer</strong> / Lauberhorn Ski Race In Summer, <br />
+  Daniel Zimmermann, 2007, 6 min.<br />
+  <strong>Ich bin&rsquo;s Helmut</strong> /  It's Me, Helmut, Nicolas Steiner, CH/DE 2009, 12 min.<br />
+  <strong>Unko</strong>, Yuri  A, 2012, 13 min.</p>
+<p><strong>19:00</strong> | Mala sala | Small Theatre  <br />
+  Unseen Cinema<br />
+  <strong>EARLY  AMERICAN AVANT-GARDE FILM, 1894-1941 </strong>/RANI AMERIČKI  AVANGARDNI FILM, 1894-1941<br />
+  /Uvodna reč / Introduction by Bruce Posner </p>
+<p><strong>Annabelle  Dances and Dances</strong> (1894-1897) by W.K.L. Dickson,  William Heise &amp; James White, 5 min.<br />
+  &ldquo;<strong>Paris  Exposition Films</strong>&rdquo; (1900) by James White, 7 min.<br />
+  Eiffel Tower from Trocadero  Palace (1900)<br />
+  Palace of Electricity (1900)<br />
+  Champs de Mars (1900)<br />
+  Panorama of Eiffel Tower  (1900)<br />
+  Scene from Elevator Ascending  Eiffel Tower (1900)<br />
+  <strong>Seeing New York by Yacht</strong> (1902) by Frederick Armitage &amp; A.E. Weed, 3 min.<br />
+  &ldquo;<strong>In  Youth, Beside the Lonely Sea</strong>&rdquo; (c. 1924-25) by creators unknown, 5 min.<br />
+  <strong>Thimble  Theater</strong> (c. 1938) by Joseph Cornell, 3 min.<br />
+  <strong>A  Bronx Morning</strong> (1931) by Jay Leyda, 12 min.<br />
+  <strong>Footnote  to Fact</strong> (1933) by Lewis Jacobs, 3 min.<br />
+  <strong>Mechanical  Principles</strong> (1930) by Ralph Steiner, 11 min.<br />
+  <strong>Footlight  Parade</strong> - &quot;By a Waterfall&quot; (1933) by Busby  Berkeley, 12 min.<br />
+  <strong>Spook  Sport</strong> (1940) by Mary Ellen Bute, Ted Nemeth &amp;  Norman McLaren 9 min.<br />
+  <strong>Glen  Falls Sequence</strong> (1937-46) by Douglass Crockwell, 5  min.<br />
+  <strong>1941</strong> (1941) by Francis Lee, 5 min.<br />
+  <strong>Abstract  Experiment in Kodachrome</strong> (c.1940s) Slavko Vorkapich,  4 min.<br />
+  <strong>Object  Lesson</strong> (1941) by Christopher Young, 9 min</p>
+<p><strong>21:00</strong> | Velika sala | Main Theatre <br />
+  <strong>ALTERNATIVE FILM/VIDEO 2013</strong><br />
+  Lista značajnih ostvarenja Festivala / List of  Important Works of the Festival </p>
+<p><strong>Žiri / Jury</strong><br />
+  Karpo Godina (Slovenija /  Slovenia), Vassily Bourikas (Grčka / Greece), Andrés Denegri (Argentina) </p>
+<p><strong>Selekciona komisija / Selection Committee<u></u></strong><br />
+  Zoran  Saveski, Greg DeCuir</p>
+<p class="dan">&nbsp;</p>
+</body>
+</html>

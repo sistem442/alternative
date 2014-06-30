@@ -1,0 +1,26 @@
+/* CSS Document */
+.cf:before,
+.cf:after{
+	content:" ";
+	display:table;
+}
+.cf:after{
+	clear:both;
+}
+.container{
+	max-width:680px;
+	padding:10px;
+	background:#000;
+	}
+.gallery{
+	width:100%;
+	}
+.gallery-item{
+	float:left;
+	width:44%;
+	margin:1%;
+	padding:2%;	
+	}
+.gallery-item img{
+	width:100%;	
+	}

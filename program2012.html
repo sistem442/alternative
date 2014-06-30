@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Alternative 2012 program</title>
+<style type="text/css">
+.dhtmlgoodies_question{	/* Styling question */
+	/* Start layout CSS */
+	color:#FFF;
+	font-size:0.9em;
+	width:630px;
+	margin-bottom:2px;
+	margin-top:2px;
+	padding-left:2px;
+	background-repeat:no-repeat;
+	background-position:top right;
+	height:40px;
+
+	/* End layout CSS */
+
+	overflow:hidden;
+	cursor:pointer;
+}
+.dhtmlgoodies_answer{	/* Parent box of slide down content */
+	/* Start layout CSS */
+	border:1px solid #CC0;
+	width:600px;
+
+	/* End layout CSS */
+
+	visibility:hidden;
+	height:0px;
+	overflow:hidden;
+	position:relative;
+
+}
+.dhtmlgoodies_answer_content{	/* Content that is slided down */
+	padding:1px;
+	font-size:0.9em;
+	position:relative;
+}
+
+</style>
+<script type="text/javascript">
+/************************************************************************************************************
+Show hide content with slide effect
+Copyright (C) August 2010  DTHMLGoodies.com, Alf Magne Kalleland
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+Dhtmlgoodies.com., hereby disclaims all copyright interest in this script
+written by Alf Magne Kalleland.
+
+Alf Magne Kalleland, 2010
+Owner of DHTMLgoodies.com
+
+************************************************************************************************************/
+
+var dhtmlgoodies_slideSpeed = 10;	// Higher value = faster
+var dhtmlgoodies_timer = 10;	// Lower value = faster
+
+var objectIdToSlideDown = false;
+var dhtmlgoodies_activeId = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_expandMultiple = false; // true if you want to be able to have multiple items expanded at the same time.
+
+function showHideContent(e,inputId)
+{
+	if(dhtmlgoodies_slideInProgress)return;
+	dhtmlgoodies_slideInProgress = true;
+	if(!inputId)inputId = this.id;
+	inputId = inputId + '';
+	var numericId = inputId.replace(/[^0-9]/g,'');
+	var answerDiv = document.getElementById('dhtmlgoodies_a' + numericId);
+
+	objectIdToSlideDown = false;
+
+	if(!answerDiv.style.display || answerDiv.style.display=='none'){
+		if(dhtmlgoodies_activeId &&  dhtmlgoodies_activeId!=numericId && !dhtmlgoodies_expandMultiple){
+			objectIdToSlideDown = numericId;
+			slideContent(dhtmlgoodies_activeId,(dhtmlgoodies_slideSpeed*-1));
+		}else{
+
+			answerDiv.style.display='block';
+			answerDiv.style.visibility = 'visible';
+
+			slideContent(numericId,dhtmlgoodies_slideSpeed);
+		}
+	}else{
+		slideContent(numericId,(dhtmlgoodies_slideSpeed*-1));
+		dhtmlgoodies_activeId = false;
+	}
+}
+
+function slideContent(inputId,direction)
+{
+
+	var obj =document.getElementById('dhtmlgoodies_a' + inputId);
+	var contentObj = document.getElementById('dhtmlgoodies_ac' + inputId);
+	height = obj.clientHeight;
+	if(height==0)height = obj.offsetHeight;
+	height = height + direction;
+	rerunFunction = true;
+	if(height>contentObj.offsetHeight){
+		height = contentObj.offsetHeight;
+		rerunFunction = false;
+	}
+	if(height<=1){
+		height = 1;
+		rerunFunction = false;
+	}
+
+	obj.style.height = height + 'px';
+	var topPos = height - contentObj.offsetHeight;
+	if(topPos>0)topPos=0;
+	contentObj.style.top = topPos + 'px';
+	if(rerunFunction){
+		setTimeout('slideContent(' + inputId + ',' + direction + ')',dhtmlgoodies_timer);
+	}else{
+		if(height<=1){
+			obj.style.display='none';
+			if(objectIdToSlideDown && objectIdToSlideDown!=inputId){
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.display='block';
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.visibility='visible';
+				slideContent(objectIdToSlideDown,dhtmlgoodies_slideSpeed);
+			}else{
+				dhtmlgoodies_slideInProgress = false;
+			}
+		}else{
+			dhtmlgoodies_activeId = inputId;
+			dhtmlgoodies_slideInProgress = false;
+		}
+	}
+}
+
+
+
+function initShowHideDivs()
+{
+	var divs = document.getElementsByTagName('DIV');
+	var divCounter = 1;
+	for(var no=0;no<divs.length;no++){
+		if(divs[no].className=='dhtmlgoodies_question'){
+			divs[no].onclick = showHideContent;
+			divs[no].id = 'dhtmlgoodies_q'+divCounter;
+			var answer = divs[no].nextSibling;
+			while(answer && answer.tagName!='DIV'){
+				answer = answer.nextSibling;
+			}
+			answer.id = 'dhtmlgoodies_a'+divCounter;
+			contentDiv = answer.getElementsByTagName('DIV')[0];
+			contentDiv.style.top = 0 - contentDiv.offsetHeight + 'px';
+			contentDiv.className='dhtmlgoodies_answer_content';
+			contentDiv.id = 'dhtmlgoodies_ac' + divCounter;
+			answer.style.display='none';
+			answer.style.height='1px';
+			divCounter++;
+		}
+	}
+}
+window.onload = initShowHideDivs;
+</script>
+
+<STYLE id="tmpStyle" type="text/css" disabled="">
+#dani {
+	color:#FC0;
+	
+}
+a{color:#CC0;}
+.dan {
+	color: #CC0;
+}
+</STYLE>
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin-top:0cm;
+margin-right:0cm;
+margin-bottom:10.0pt;
+margin-left:0cm;
+line-height:115%;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";
+}
+p.MsoNoSpacing {
+margin:0cm;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:"Times New Roman","serif";
+}
+li.MsoNormal {
+margin-top:0cm;
+margin-right:0cm;
+margin-bottom:10.0pt;
+margin-left:0cm;
+line-height:115%;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";
+}
+-->
+</style>
+</head>
+
+<body style="background-color:#000; color:#FFF; font-family:Arial, Helvetica, sans-serif; ">
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16499062-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<p class="dan"><strong>Sreda / Wednesday, 5. Decembar </strong></p>
+<p>11:00  Mala sala / Small Hall<br />
+  <em>Filmska radionica / Film Workshop</em><br />
+  <strong class="dan">FILM NA FILMU / </strong>FILM ON FILM<br />
+  Radionicu  snimanja i razvijanja filmske trake vode<br />
+  Vassily Bourikas i Fanis Dalezios / Shooting workshop and  developing film tape lead <br />
+  Vassily Bourikas and Fanis Dalezios <br />
+(Radionica  traje do subote, 8. decembra / Workshop last until  Saturday 8th December)</p>
+<p>16:00  Mala sala / Small Hall<br />
+  <em>Retrospektiva / Retrospective </em><br />
+  <strong class="dan">ALTERNATIVE FILM-VIDEO 2011.</strong><br />
+  Lista značajnih ostvarenja Festivala / List of  Important Cinematic Works of the Festival</p>
+<br />
+17:00  Mala sala / Small Hall <br />
+  Grčki eksperimentalni i nezavisni film / Greek  experimental &amp; independent film
+  <div class="dhtmlgoodies_question"><strong class="dan"><spaN style="text-decoration:underline">THE SHIT AND THE FAN </spaN></strong></div>
+  Priredio  i predstavlja Vasili Burikas (edited and presented by Vassily Bourikas)
+<div class="dhtmlgoodies_answer">
+<div>
+<p>Grčka u 21. veku. &ldquo;Shit  hit the fan&ldquo; u političkom i ekonomskom  smislu. Ovi eksperimentalni i nezavisni niskobudžetni kratki filmovi nisu nužno  komentar na krizu. Njihovo postojanje je komentar sam po sebi. Oni nemaju  nikakve veze sa starim grčkim filmom, niti sa skorašnjim dobro pozicioniranim  novim grčkim filmom. Oni predstavljaju &quot;drugačiji film&quot; čiji razvoj  bismo svi voleli da vidimo u Grčkoj. Svi mediji, uključujući i film, su  izuzetno odgovorni za krizu koja prevazilazi politiku i novac, i pogađa nas  sociološki, moralno i duhovno. Postaje sve teže napraviti razliku između  poslovičnog izmeta i ventilatora koji širi smrad. Eksperimentisanje i  istraživanje nikada nije pomoglo filmu u našoj zemlji, ali polako filmadžije  uzimaju stvar u svoje ruke. Uvek će biti sranja, želimo drugačiji ventilator.</p>
+<p>Greece in the 21st Century. The &ldquo;Shit hit the fan&ldquo; in  political and economic terms. These experimental and independent low budget  shorts are not necessarily a comment to this crisis. Their mere existence is a  comment in itself. They have nothing to do with the old Greek cinema, nor with  the recently buoyant New Greek Cinema. They constitute a &ldquo;different cinema&rdquo;  that we would all like to see develop in Greece. All media, including cinema,  are hugely responsible for a crisis that goes beyond politics and money but  also affects us sociologically, morally even spiritually. It is becoming  increasingly difficult to distinguish between the proverbial feces and the  ventilator that spreads the stench. Experimentation and research has never been  helped in our country's cinema but slowly filmmakers are taking the matter to  their hands. There will always be shit, we want a different ventilator. <br />
+  V. Bourikas</p>
+</div>
+  </div>
+<p>19:00  Galerija / Gallery<br />
+  <em>Izložba / Exhibition – Otvaranje / Opening</em><br />
+  <strong>Nenad Bračić</strong> <br />
+  <strong class="dan">FOTO-KINO  OPREMA </strong>/ PHOTO-CINE EQUIPMENT <br />
+  <em>(Galerija je otvorena svakog dana od 17:00 do  21:00. Zatvaranje u subotu 12. decembra) / (Gallery is open every day from  5-9pm, Exhibition is closing on Saturday 12th December) </em></p>
+<p>19:45  Velika Galerija / Big Gallery <br />
+  <em>Izložba / Exhibition – Otvaranje / Opening</em><br />
+  <strong class="dan">ALTERNATIVE FILM – VIDEO 1982 – 2012</strong><br />
+  <em>Pripremio Nikola Đurić, Alternative  film/video arhiv AFC / Edited by Nikola </em><em>Đurić </em><em>Alternative  film/video </em><em>Archive AFC</em><br />
+  <em>(Galerija je otvorena svakog dana od 17:00 do  21:00. Zatvaranje u subotu 15. decembra) / (Gallery is open every day from  5-9pm, Exhibition is closing on Saturday 15th December ) </em></p>
+<p>20:00  Velika sala / Big Hall <br />
+  <em>Konkurencija / Competition </em><br />
+  <strong class="dan">REGIO_PRO_1</strong><br />
+  <em>Our Demise in Four  Stages</em>,  Igor Simić, 2012, Srbija/Serbia, 9 min.<br />
+  <em>Distopija/Dystopia</em>, Igor Dropuljić,  2012, Hrvatska/Croatia, 4 min.<br />
+  <em>Mirage</em>, Srđan Keča, 2011,  Srbija/Serbia, 42 min. <br />
+  <strong class="dan">INTER_PRO_1</strong><br />
+  <em>Coming Attractions</em>, Peter Tscherkassky,  2012, Austrija/Austria, 25 min.<br />
+  <em>The HandEye (Bone  Ghosts)</em>,  Anja Dornieden, Juan David Gonzalez Monroy, 2012, Nemačka/Germany,  7 min.<br />
+  <em>Gorgonen</em>, Ajon Srivardhana  Kibreab, 2012, Švedska/Tajland/Sweden/Thailand, 10 min. <br />
+  <em>Dawn of the  Rainbow/Zora duge</em>,  Katie Goodwin, 2011, Velika Britanija/United Kingdom, 4 min.<br />
+  <em>The Swimmer/Plivač</em>, Salise Hughes,  2010, SAD/USA, 4 min.<br />
+  <em>Was nicht in die  Suppe kommt, geht ins Klo</em>/<em>Šta ne staviš u  supu, otići će niz wc šolju</em>/<em>What You  Don&rsquo;t Put Into the Soup Goes Down the Loo</em>, Kirsten Burger &amp; Laura  Vogel, 2011, Švajcarska/Switzerland, 24 min.</p>
+<p><strong>&nbsp;</strong></p>
+<p><strong class="dan">Četvrtak / Thursday, 6. Decembar </strong></p>
+<p>13:00  Mala sala / Small Hall <br />
+  <em>Konkurencija / Competition </em><br />
+  <strong class="dan">REGIO_PRO_1</strong><br />
+  <strong class="dan">INTER_PRO_1</strong></p>
+<p>15:00  Mala sala / Small Hall  <br />
+  <strong class="dan">NARATIVE_1</strong><br />
+  <em>A Flea Orchestra in  Your Ear/Orkestar buva za tvoje uši</em>, Graeme Cole, 2012, Velika Britanija/United  Kingdom, 15 min.<br />
+  <em>Handsome Devil</em>, Rubin Stein, 2012,  Španija/Spain, 10 min.<br />
+  <em>V put</em>/<em>Na putu/Away</em>, Anna Sarukhanova, 2012, Gruzija/Georgia, 17 min.<br />
+  <em>Sid &amp; Barry</em>, Quek Shio Chuan,  2012, Malezija/Malaysia, 14 min.<br />
+  <em>Dissent</em>, Helmut Dosantos,  2012, Italija/Meksiko/Francuska/SAD/Italy/Mexico/France/USA, 35 min.</p>
+<p>16:00  Mala sala / Small Hall -  Atelje 26 /  Atelier 26<br />
+  <em>Filmska radionica / Film Workshop</em><br />
+  <strong class="dan">SCRATCH FILM RADIONICA</strong> / SCRATCHING ON FILM WORKSHOP<br />
+  Radionicu  vodi Ivan Ladislav Galeta / Workshop mentor - Ivan Ladislav Galeta <br />
+  (Radionica  traje do subote 8. decembra / Workshop last until Saturday 8th  December)</p>
+<p>17:00  Mala sala / Small Hall <br />
+  <strong class="dan">SKRIVENI  PARAMETRI MAĐARSKOG FILMA</strong>/ THE HIDDEN PARAMETERS OF HUNGARIAN FILM</strong><br />
+  Amaterski, underground i nezavisni  film 60-tih, 70-tih i 80-tih / <br />
+  Amateur, Underground and Independent  Films from the 60's, 70's, and the 80's<br />
+  Priredio  i predstavlja Sebastian Kodolani<strong> </strong>(edited  and presented<strong> </strong>by Sebestyén  Kodolányi)</p>
+<p>19:00  Mala sala / Small Hall <br />
+  Autori  predstavljaju / Authors presents <br />
+  <strong>KARPO POTNIK </strong>/ KARPO PUTNIK /  KARPO PASSENGER<br />
+  Matjaž  Ivanišin, 50 min<br />
+  <strong class="dan">OKTOLOG</strong><br />
+  Karpo  Godina, 30 min</p>
+<p>&nbsp;</p>
+<p>21:00  Velika sala / Big Hall <br />
+  <em>Konkurencija / Competition </em><br />
+  <strong class="dan">REGIO_PRO_2</strong><br />
+  <em>INSiDE OUT</em>, Liliana Resnick,  2011, Hrvatska/Croatia, 8 min.<br />
+  <em>Gledam oči/Focus On  Eyes</em>,  Amir Muratović, 2012, Slovenija/Slovenia, 5 min.<br />
+  <em>Niti/Threads,</em> Žarko Aleksić, 2012,  Srbija/Serbia, 4 min.<br />
+  <em>A Love Poem</em>, Jurij Meden, 2012,  Slovenija/Slovenia, 2 min.<br />
+  <em>Found footage Mr  Chips</em>,  Željko Radivoj, 2012, Hrvatska/Croatia, 9 min.<br />
+  <em>Kako sam ostao bez  krila/How I lost my wings</em>, Ivan Tasić, 2012, Srbija/Serbia, 22 min.<br />
+  <strong class="dan">INTER_PRO_2</strong><br />
+  <em>Bolex Mon Amour</em>, Daniela Zahlner,  2011, Austrija/Austria, 3 min.<br />
+  <em>The Body of the Soul</em>, David Zurcher,  2012, Švajcarska/Switzerland, 8 min.<br />
+  <em>Pigs</em>, Konstantina  Kotzamani, 2012, Grčka/Greece, 13 min.<br />
+  <em>Pfad/Vorgarten/Kollaps/Still/Put/Dvorište/Kolaps/Tišina/Path/Frontyard/Collapse/Silence/</em>, Kai Miedendorp,  2012, Nemačka/Germany, 8 min.<br />
+  <em>Square Dance  Hypnotist/Hipnotički kvadratni ples</em>, Allan Brown, 2012, Kanada/Canada, 17 min.<br />
+  <em>Gradually</em>, Benjamin Ramirez Pérez,  2011, Nemačka/Germany, 6 min.<br />
+  <em>Conference notes on  film 05</em>,  Norbert Pfaffenbichler, 2011, Austrija/Austria, 8 min.<br />
+  <em>Hermeneutics</em>, Alexei Dmitriev,  2012, Rusija/Russia, 3 min.   </p>
+<p>&nbsp;</p>
+<strong class="dan">Petak / Friday, 7.  Decembar </strong></p>
+<p>10:00 <br />
+  Forum /  Forum</p>
+  <div class="dhtmlgoodies_question"><strong class="dan"><spaN style="text-decoration:underline">1. ALTERNATIVE FILM/VIDEO ISTRAŽIVAČKI FORUM / 1st       ALTERNATIVE FILM/VIDEO RESEARCH FORUM</li>
+</spaN></strong></div>
+<div class="dhtmlgoodies_answer">
+<div>
+<p>Povodom 30-to godišnjice Festivala novog filma i videa umetnosti ALTERNATIVE FILM/VIDEO u Beogradu, organizacioni tim je  ponosan da predstavi Prvi ALTERNATIVE   FILM/VIDEO istraživački forum kao novi, jedinstven programski segment  festivala. Ovaj jednodnevni događaj (7. decembar 2012) okupiće međunarodnu  grupu istraživača i pisaca koji se bave studijama alternativnog /  eksperimentalnog / avangardnog filma, videa i novih medija. Tema za ovaj inicijalni  forum je istraživanje i predavanje u oblasti  alternativnog filma i videa.</p>
+<p>On the occasion of the 30th  anniversary of the Festival of new film and video art Alternative Film/Video  Belgrade (5-9. December 2012), the festival organization team is proud to  present the 1st Alternative Film/Video Research Forum as a unique new element  of the festival programming schedule. This one-day event (7 December  2012)&nbsp;will gather an international group of researchers and writers who  are concerned with the study of alternative/experimental/avant-garde works of  film, video, and new media, for an intimate forum where papers will be  delivered and discussions held. The theme for this initial forum is researching  and teaching alternative film and video. </p>
+<p>Učesnici  / Participations: Marc Siegel (Goethe-University, Frankfurt), Dirk de  Bruyn (Deakin University, Melbourne), Adeena Mey  and Nicolas Brulhart (University of  Lausanne/ECAL, Lausanne University of Art and Design), Lucia Aspesi (Archivio  Marinella Pirelli, Italy), Tijana Mamula (John Cabot University, Rome), Ivan  Ladislav Galeta (multimedia artist).<br />
+  Moderator  Foruma / Curated by Greg de Cuir, Jr. </p>
+  </div>
+  </div>
+<p>13:00  Mala sala / Small Hall <br />
+  <em>Konkurencija / Competition </em><br />
+  <strong class="dan">REGIO_PRO_2</strong><br />
+  <strong class="dan">INTER_PRO_2</strong></p>
+<p>15:00  Mala sala / Small Hall <br />
+  <strong class="dan">NARATIVE_2</strong><br />
+  <em>Found  Objects/Pronađeni objekti</em>, Dawn Westlake, 2012, SAD/USA, 12 min.<br />
+  <em>Anacos/Komadi/Pieces</em>, Xacio Baño, 2012,  Španija/Spain, 6 min.<br />
+  <em>Up and Down the  Horizon</em>,  Sabrina Sarabi, 2011, Nemačka/Germany, 15 min.<br />
+  <em>Bruno</em>, Álvaro San José,  2012, Španija/Spain, 17 min.<br />
+  <em>Visitors</em>, Dmytro Bondarchuk,  2012, Ukrajina/Ukraine, 7 min.<br />
+  <em>Disarray</em>, Chandradeep Das,  2011, Indija/India, 28 min.</p>
+<p>17:00  Mala sala / Small Hall<br />
+  <strong class="dan">FILMOVI STUDENATA FAKULTETA LEPIH  UMETNOSTI IZ TURA, FRANCUSKA</strong> / Presentation of  students films of Art department at the Ecole Superieure des beaux-arts, Tours,  Angers, Le Mans, site de Tours.&nbsp;<br />
+  Predstavlja  / Presented by David Kidman</p>
+<p>&nbsp;</p>
+<p>19:00  Mala sala / Small Hall <br />
+  <strong class="dan">RETROSPEKTIVA  MUZEJA OM PRODUKCIJE / </strong>RETROSPECTIVE MUSEUM OM  PRODUCTION <br />
+  Predstavlja  Slobodan Valentinčić, kustos / Presents Slobodan Valentinčić, curator</p>
+<p>21:00  Velika sala / Big Hall <br />
+  <em>Konkurencija / Competition </em><br />
+  <strong class="dan">REGIO_PRO_3</strong><br />
+  <em>Prošlost/Past</em>, Petar Dositej  Aranđelović, 2012, Srbija/Serbia, 8 min.<br />
+  <em>La Poire</em>, Claire Billars,  2012, Slovenija/Slovenia, 3 min.<br />
+  <em>Turist/The Tourist, </em>Branko Radaković<em>, </em>2012, Srbija/Serbia, 5 min.<br />
+  <em>Od do/</em> <em>From To</em>, Miranda Herceg, 2012, Hrvatska/Croatia, 10 min.<br />
+  <em>Infinity</em>, Milan Zulić, 2012,  Srbija/Serbia, 3 min.<br />
+  <em>Dnevnik  svetlopisca/The diary of a photo-graphos</em>, Nikola Jelovac, 2012, Srbija/Serbia, 14  min.<br />
+  <strong class="dan">INTER_PRO_3</strong><br />
+  <em>Note of Hand no. 12</em>, Agapi Kousteni  &amp; Aspa Sioku, 2012, Grčka/Greece, 19 min.<br />
+  <em>Haikus for  Karaoke/Haiku za karaoke</em>, Roberto Santaguida, 2012, Kanada/Canada, 4 min.<br />
+  <em>The Voice of God</em>, Bernd Luetzeler,  2011, Indija/Nemačka/India/Germany, 10 min.<br />
+  <em>The Devil</em>, Jean-Gabriel  Périot, 2012, Francuska/France, 7 min.<br />
+  <em>Robo Cats in Titan  City</em>,  Paul Wiersbinski, 2012, Nemačka/Germany, 5 min.<br />
+  <em>Miss Candace  Hilligoss&rsquo; Flickering Halo</em>, Fabio Scacchioli &amp; Vincenzo Core, 2011,  Italija/Italy, 14 min.<br />
+  <em>Variations in the  Stone Forest</em>,  Ouestbrouq, 2011, Francuska/France, 4 min.<br />
+  <em>Nocturn</em>, Kai Welf Hoyme,  2012, Nemačka/Germany, 4 min.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong class="dan">Subota / Saturday, 8.  Decembar </strong></p>
+<p>11:00 <br />
+  Okrugli  sto / Round table <br />
+  <strong class="dan">FILM POSLE FILMSKE TRAKE  / </strong>FILM AFTER FILM<br />
+  Učestvuju / Participants: Hrvoje Turković,  Vlada Petrić, Ivan Ladislav Galeta, Božidar Zečević, Sebastian Kodolani  (Sebestyén Kodolányi),   Vasili Burikas (Vassily Bourikas), Jurij Meden, Stevan Vuković, Milorad Glušica,  Joca  Jovanović, Sava Trifković, Slobodan Valentinčić, Davorin Marc, Diana Nenadić...</p>
+<p>13:00  Mala sala / Small Hall <br />
+  <em>Konkurencija / Competition </em><br />
+  <strong class="dan">REGIO_PRO_3</strong><br />
+  <strong class="dan">INTER_PRO_3</strong></p>
+<p>15:00  Mala sala / Small Hall<br />
+  <strong class="dan">ALTERNATIVE FILM 1982</strong><br />
+  Lista značajnih ostvarenja Festivala / List of  Important Cinematic Works of the Festival</p>
+<p>17:00  Mala sala / Small Hall <br />
+  <strong class="dan">IVAN MARTINAC</strong><br />
+  Uvodna  reč / Presents: Diana Nenadić </p>
+<p>19:00  Mala sala / Small Hall <br />
+  Autorska  prezentacija / Author presents <br />
+  <strong class="dan">DAVORIN MARC</strong><br />
+  <strong class="dan">S PRSTOM V OKO</strong>&nbsp; /&nbsp;<strong>PRSTOM U OKO&nbsp; /</strong>&nbsp; WITH THE  FINGER IN THE EYE</p>
+<p>21:00 <br />
+  Velika  sala / Big Hall<br />
+  <em>Konkurencija </em>/<em> Competition </em><br />
+  <strong class="dan">REGIO_PRO_4</strong><br />
+  <em>Lighthouse</em>, Anna Savchenko,  2012, Slovenija/Slovenia, 2 min.<br />
+  <em>Women's Court-The  Unspoken: short dream</em>,  Jovana Dimitrijević, 2012, Srbija/Serbia, 7 min.  <br />
+  <em>Saglasje 14/8/Harmony  14/8</em>,  Bojan Todorović, 2012, Srbija/Serbia, 12 min.<br />
+  <em>Solidarnost/Solidarity</em>, Nika Autor, 2012,  Slovenija/Slovenia, 6 min.<br />
+  <em>Trip Noir</em>, Raša Kominac  Radoslav, 2012, Srbija/Serbia, 11 min.<br />
+  <em>Koma/Coma</em>, Jelena Micić, Žarko  Aleksić, 2012, Srbija/Serbia, 2 min.<br />
+  <em>Čudno-Smešno-Strašne  priče/Weird-Funny-Scarry Stories,</em> Ana Jelić, 2011, Srbija/Serbia, 11 min.<br />
+  <strong class="dan">INTER_PRO_4</strong><br />
+  <em>A One Shot  Deal/Kadrirana pogodba</em>, R. Vermette, 2012, Kanada/Canada, 5 min.<br />
+  <em>In Impressions  Out/Izvan prikaza</em>,  Metrah Pashaee, 2012, SAD/USA, 19 min.  <br />
+  <em>Icecream</em>, Alisa Goddess,  2012, Rusija/Russia, 3 min.<br />
+  <em>Noctambule…triptych:act  two/Noćni…triptih:scena druga</em>, Daniel Wallder, 2012, Velika  Britanija/United Kingdom, 12 min.<br />
+  <em>Спящая девочка/</em> <em>Uspavana devojčica/The Sleeping Little Girl</em>, Igor Gladkov, 2012,  Rusija/Russia, 3 min.<br />
+  <em>Many a Swan/Kao labud</em>, Blake Williams,  2012, Kanada/Canada, 6 min.<br />
+  <em>Maj&rsquo;noun</em>, Hazem Berrabah,  2012, Tunis/Tunisia, 25 min.<br />
+</p>
+<p><strong class="dan">Nedelja / Sunday, 9.  Decembar </strong></p>
+<p>11:00 <br />
+  Okrugli  sto / Roundtable <br />
+  <strong>ALTERNATIVE FILM/VIDEO – 30 godina /  ALTERNATIVE FILM/VIDEO – 30 years </strong><br />
+  Učestvuju  / Participations:  Prof Vlada Petrić, Božidar Zečević, Jovan Joca Jovanović, Sava Trifković,  Zoran Saveski, Ivan Ladislav Galeta<em>, Jurij  Meden, Stevan Vuković, Sebastian Kodolani (Sebestyén Kodolányi), Greg Dekur  (Greg DeCuir), Vasili Burikas (Vassily Bourikas) ...</em></p>
+<p>13:00  Mala sala / Small Hall <br />
+  <em>Konkurencija / Competition </em><br />
+  <strong class="dan">REGIO_PRO_4</strong><br />
+  <strong class="dan">INTER_PRO_4</strong></p>
+<p>15:00  Mala sala / Small Hall <br />
+  <strong>SPECIAL PROGRAM: AURAS</strong><br />
+  <em>Kamera Rot</em>, Daniela Zahlner,  2011, Austrija/Austria, 3 min.<br />
+  <em>Go Burning Atacama Go</em>, Alberto Gemmi, 2012,  Italija/Italy, 6 min.<br />
+  <em>Papierowe  pudelko/Papirna kutija/Paper Box</em>, Zbigniew Czapla, 2012, Poljska/Poland, 9  min.<br />
+  <em>Tricks are for  Kiddo/Trikovi su za Malog</em>, Rhayne Vermette, 2012, Kanada/Canada, 2 min.<br />
+  <em>Jour Sombre</em>, Johannes Hammel,  2011, Austrija/Austria, 8 min.<br />
+  <em>5354</em>, Susu Laroche, 2012,  Velika Britanija/United Kingdom, 3 min.<br />
+  <em>Tranquility</em>, Siegfried A.  Fruhauf, 2010, Austrija/Austria, 7 min.<br />
+  <em>RED: UX</em>, Andreas Gogol,  2012, Nemačka/Germany, 6 min.<br />
+  <em>tricolor</em>, Martina Heyduk,  2011, Austrija/Austria, 7 min.<br />
+  <em>And Oceans/I okeani</em>, Jake Barningham,  2012, SAD/USA, 2 min.  </p>
+<p>17:00  Mala sala / Small Hall <br />
+  <strong class="dan">FILMOVI NASTALI NA RADIONICAMA / </strong>WORKSHOP RESULTS<br />
+  SCRATCH  FILM / SCRATCHING ON FILM <br />
+  FILM NA  FILMU<strong> / </strong>FILM ON FILM<br />
+  <br />
+  19:00  Mala sala / Small Hall<br />
+  Autorska  prezentacija / Author presents<br />
+  <strong class="dan">LJUBOMIR ŠIMUNIĆ</strong></p>
+<p>21:00  Velika sala / Big Hall <br />
+  <strong class="dan">ALTERNATIVE FILM/VIDEO 2012</strong><br />
+  Lista značajnih ostvarenja Festivala / List of  Important Cinematic Works of the Festival</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong class="dan">Žiri / Jury</strong><br />
+  Prof  Vlada Petrić, Božidar Zečević, Jovan Joca Jovanović, Sava Trifković</p>
+<p><strong class="dan">Selekciona komisija /  Selection Committee</strong><br />
+  Zoran  Saveski, Greg Dekur (Greg DeCuir)</p>
+</body>
+</html>

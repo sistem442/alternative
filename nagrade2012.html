@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Alternative 2012 index</title>
+<style type="text/css">
+.dhtmlgoodies_question{	/* Styling question */
+	/* Start layout CSS */
+	color:#CC0;
+	font-size:0.9em;
+	width:630px;
+	margin-bottom:2px;
+	margin-top:2px;
+	padding-left:2px;
+	background-repeat:no-repeat;
+	background-position:top right;
+	height:40px;
+
+	/* End layout CSS */
+
+	overflow:hidden;
+	cursor:pointer;
+}
+.dhtmlgoodies_answer{	/* Parent box of slide down content */
+	/* Start layout CSS */
+	border:1px solid #CC0;
+	width:600px;
+
+	/* End layout CSS */
+
+	visibility:hidden;
+	height:0px;
+	overflow:hidden;
+	position:relative;
+
+}
+.dhtmlgoodies_answer_content{	/* Content that is slided down */
+	padding:1px;
+	font-size:0.9em;
+	position:relative;
+}
+
+</style>
+<script type="text/javascript">
+/************************************************************************************************************
+Show hide content with slide effect
+Copyright (C) August 2010  DTHMLGoodies.com, Alf Magne Kalleland
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+Dhtmlgoodies.com., hereby disclaims all copyright interest in this script
+written by Alf Magne Kalleland.
+
+Alf Magne Kalleland, 2010
+Owner of DHTMLgoodies.com
+
+************************************************************************************************************/
+
+var dhtmlgoodies_slideSpeed = 10;	// Higher value = faster
+var dhtmlgoodies_timer = 10;	// Lower value = faster
+
+var objectIdToSlideDown = false;
+var dhtmlgoodies_activeId = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_slideInProgress = false;
+var dhtmlgoodies_expandMultiple = false; // true if you want to be able to have multiple items expanded at the same time.
+
+function showHideContent(e,inputId)
+{
+	if(dhtmlgoodies_slideInProgress)return;
+	dhtmlgoodies_slideInProgress = true;
+	if(!inputId)inputId = this.id;
+	inputId = inputId + '';
+	var numericId = inputId.replace(/[^0-9]/g,'');
+	var answerDiv = document.getElementById('dhtmlgoodies_a' + numericId);
+
+	objectIdToSlideDown = false;
+
+	if(!answerDiv.style.display || answerDiv.style.display=='none'){
+		if(dhtmlgoodies_activeId &&  dhtmlgoodies_activeId!=numericId && !dhtmlgoodies_expandMultiple){
+			objectIdToSlideDown = numericId;
+			slideContent(dhtmlgoodies_activeId,(dhtmlgoodies_slideSpeed*-1));
+		}else{
+
+			answerDiv.style.display='block';
+			answerDiv.style.visibility = 'visible';
+
+			slideContent(numericId,dhtmlgoodies_slideSpeed);
+		}
+	}else{
+		slideContent(numericId,(dhtmlgoodies_slideSpeed*-1));
+		dhtmlgoodies_activeId = false;
+	}
+}
+
+function slideContent(inputId,direction)
+{
+
+	var obj =document.getElementById('dhtmlgoodies_a' + inputId);
+	var contentObj = document.getElementById('dhtmlgoodies_ac' + inputId);
+	height = obj.clientHeight;
+	if(height==0)height = obj.offsetHeight;
+	height = height + direction;
+	rerunFunction = true;
+	if(height>contentObj.offsetHeight){
+		height = contentObj.offsetHeight;
+		rerunFunction = false;
+	}
+	if(height<=1){
+		height = 1;
+		rerunFunction = false;
+	}
+
+	obj.style.height = height + 'px';
+	var topPos = height - contentObj.offsetHeight;
+	if(topPos>0)topPos=0;
+	contentObj.style.top = topPos + 'px';
+	if(rerunFunction){
+		setTimeout('slideContent(' + inputId + ',' + direction + ')',dhtmlgoodies_timer);
+	}else{
+		if(height<=1){
+			obj.style.display='none';
+			if(objectIdToSlideDown && objectIdToSlideDown!=inputId){
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.display='block';
+				document.getElementById('dhtmlgoodies_a' + objectIdToSlideDown).style.visibility='visible';
+				slideContent(objectIdToSlideDown,dhtmlgoodies_slideSpeed);
+			}else{
+				dhtmlgoodies_slideInProgress = false;
+			}
+		}else{
+			dhtmlgoodies_activeId = inputId;
+			dhtmlgoodies_slideInProgress = false;
+		}
+	}
+}
+
+
+
+function initShowHideDivs()
+{
+	var divs = document.getElementsByTagName('DIV');
+	var divCounter = 1;
+	for(var no=0;no<divs.length;no++){
+		if(divs[no].className=='dhtmlgoodies_question'){
+			divs[no].onclick = showHideContent;
+			divs[no].id = 'dhtmlgoodies_q'+divCounter;
+			var answer = divs[no].nextSibling;
+			while(answer && answer.tagName!='DIV'){
+				answer = answer.nextSibling;
+			}
+			answer.id = 'dhtmlgoodies_a'+divCounter;
+			contentDiv = answer.getElementsByTagName('DIV')[0];
+			contentDiv.style.top = 0 - contentDiv.offsetHeight + 'px';
+			contentDiv.className='dhtmlgoodies_answer_content';
+			contentDiv.id = 'dhtmlgoodies_ac' + divCounter;
+			answer.style.display='none';
+			answer.style.height='1px';
+			divCounter++;
+		}
+	}
+}
+window.onload = initShowHideDivs;
+</script>
+
+<STYLE id="tmpStyle" type="text/css" disabled="">
+#dani {
+	color:#FC0;
+	
+}
+a{color:#CC0;}
+.dan {
+	color: #CC0;
+}
+</STYLE>
+
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin-top:0cm;
+margin-right:0cm;
+margin-bottom:10.0pt;
+margin-left:0cm;
+line-height:115%;
+font-size:11.0pt;
+font-family:"Calibri","sans-serif";
+}
+-->
+</style>
+<style type="text/css">
+<!--
+-->
+</style>
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+
+<body class="MsoNormal" style="background-color:#000; color:#FFF; font-family:Arial, Helvetica, sans-serif; ">
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16499062-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial Black','sans-serif'; font-size:12.0pt; ">ALTERNATIVE FILM/VIDEO 2012</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">Festival  novog filma i videa / Festival of New Film and Video</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">Dom  kulture </span><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&bdquo;Studentski grad&ldquo; / &bdquo;Student`s City&ldquo; Cultural Center</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">Akademski filmski centar  / Akademic Film Center</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">5 – 9.  12. 2012.</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&nbsp;</span></p>
+<p><strong>Lista  značajnih ostvarenja Festivala</strong></p>
+<p>Žiri u sastavu profesor Vlada Petrić, Jovan Jovanović i Sava Trifković (Srbija), na Listu značajnih  ostvarenja Festivala uvrstio je sledeće filmove (prema abecednom redosledu): </p>
+<p><strong>Conference  notes on film 05, </strong>Norbert Pfaffenbichler, Austrija <br />
+  <strong>Gradually, </strong>Benjamin Ramirez Pérez, Nemačka<strong></strong><br />
+  <strong>Infinity, </strong>Milan Zulić, Srbija <br />
+  <strong>Miss  Candace Hilligoss&rsquo; Flickering Halo, </strong>Fabio  Scacchioli &amp; Vincenzo Core, Italija<br />
+  <strong>Od  do/ From To, </strong>Miranda Herceg, Hrvatska<br />
+  <strong>Pigs, </strong>Konstantina Kotzamani, Grčka<br />
+  <strong>Square  Dance Hypnotist/Hipnotički kvadratni ples, </strong>Allan  Brown, Kanada<br />
+  <strong>The  Swimmer/Plivač, </strong>Salise Hughes, SAD<strong></strong><br />
+  <strong>Tudor  Village: A One Shot Deal/Selo Tudor: Kadrirana pogodba, </strong>Rhayne Vermette, Kanada </p>
+  <br />
+<br />
+Nagrada autorima ovih ostvarenja, prema propozicijama Festivala, 
+jeste pravo da realizuju svoj film u okviru produkcije Akademskog 
+filmskog centra (AFC), uz korišćenje produkcionih uslova i opreme 
+AFC-a kao i smeštaj i ishranu u Studentskom gradu u Beogradu 
+u trajanju do jednog meseca.<br />
+<br />
+
+<p><strong>Nagrada Ivan Kaljević </strong></p>
+<p>U  znak sećanja na prerano preminulog autora avangardnih i alternativnih filmova  Ivana Kaljevića, nagrada se dodeljuje filmu:</p>
+<p><strong>Was nicht in die Suppe kommt, geht ins  Klo/Šta ne staviš u supu, otići će niz wc šolju/What You Don&rsquo;t Put Into the  Soup Goes Down the Loo</strong>, Kirsten Burger &amp; Laura Vogel, Švajcarska</p>
+<br />
+<br />
+<br />
+
+  <div class="dhtmlgoodies_question"><strong class="dan"><spaN style="text-decoration:underline">FILM POSLE FILMSKE TRAKE / FILM AFTER  FILM 30  godina festivala Alternative film/video // 30<sup>th</sup> anniversary of the Alternative film/video festival</span></p>
+</spaN></strong></div>
+<div class="dhtmlgoodies_answer">
+<div>
+
+
+
+
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;"><span style="font-family:'Arial','sans-serif'; font-size:10.0pt; ">&nbsp;</span></p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">ALTERNATIVE  FILM/VIDEO, Festival novog filma i videa, nekada jugoslovenski, potom  ex-jugoslovenski a sada regionalni i internacionalni, pokrenut 1982. sa idejom  da &bdquo;<strong>zabeleži i teorijski definiše</strong> kretanja i, da <strong>ukaže na istinske  vrednosti i nove stvaralačke mogućnosti</strong> u oblasti alternativnog filma  (eksperimentalni, istraživački, avangardni, lični film ...)&ldquo;, proširen je 1985.  na umetnički video sa jasnom idejom da ta dva medija, u to vreme toliko  različita, imaju zajedničku budućnost.</p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">Prekinut ratom  u Jugoslaviji početkom devedestih godina prošlog veka, obnovljen je 2003.  uspostavljajući pokidane veze i nastavljajući da bude spona među stvaraocima  ex-jugoslovenskih prostora. </p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">Uključivanje  regiona u evropske i svetske integracione tokove dovelo je neminovno do  proširenja Festivala. Danas internacionalni festival sa fokusom na region, <strong>Alternative</strong> nastavljaju svoju misiju podsticanja i vrednovanja alternativnog filmskog  mišljenja, beskompromisno podržavajući inovativni i nesputani audio-vizuelni  jezik novih digitalnih medija.</p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">30 godina od  osnivanja festivala, u Srbiji i u svetu, film prestaje da se snima i prikazuje  sa filmske trake. Da li će digitalna budućnost filma imati uticaj na estetiku i  društveni značaj alternativnog filma i filma uopšte i kakva je njegova  budućnost – pitanja su koja će biti razmotrena kroz niz izložbi, foruma,  okruglih stolova, radionica, filmskih i digitalnih projekcija.</p>
+<p align="right" style="margin-bottom:.0001pt;text-align:right;text-indent:36.0pt;line-height:normal;">Miodrag Milošević</p>
+<p style="margin-bottom:.0001pt;text-indent:36.0pt;line-height:normal;">&nbsp;</p>
+</div>
+</div>
+<br />
+<br />
+
+
+
+  <div class="dhtmlgoodies_question"><strong class="dan"><spaN style="text-decoration:underline"><strong>ALTENATIVE  FILM/VIDEO na Le Festival des Cinémas Différents et Expérimentaux de Paris</strong>
+
+</spaN></strong></div>
+<div class="dhtmlgoodies_answer">
+<div>
+
+  <p>Selekcija  filmova koji su u predhodnih nekoliko godina bili nagrađeni na festivalu  ALTERNATIVE FILM/VIDEO ili producirani od strane Akademskog filmskog centra  DKSG-a će biti prikazani na <strong>Le Festival des Cinémas Différents et Expérimentaux de </strong><strong>Paris</strong> u  okviru <strong>s</strong>pecijalnog programa <strong>&ldquo;Drugačiji  pogled&rdquo; </strong>koji je uredila Dunja Jelenković. U pitanju je selekcija filmova i  video radova, dokumentarnih i eksperimentalnih ostvarenja, među kojima se  nalaze tri filma iz bogate produkcije AFC-a <strong>&ldquo;Iznad Beograda&rdquo;, </strong>Andresa  Denegrija iz Argentine, <strong>&ldquo;Surplus&rdquo; </strong>umetničkog dua Doplgenger i <strong>&ldquo;Rayban  Meltdown&rdquo; </strong>Maneta Žuđelovića. U vreme trajanja festivala, izložba plakata i publikacija pod nazivom<em> ALTERNATIVE FILM VIDEO  1982-2012, </em>će biti integralni deo izložbe u Srpskom kulturnom centru u  Parizu. </p>
+  <p>&bdquo;Tradicija dokumentarnog i eksperimentalnog filmskog izraza u Srbiji je  duga. Ipak, nakon velikog uspeha na svetskim festivalima tokom šezdesetih i  sedamdesetih godina, danas se ovakav film na Balkanu čini zanemarenim i  zaboravljenim. U skladu sa dugom tradicijom od koje ne odustajemo, ovom  selekcijom želimo da podsetimo na dva važna jubileja. Jedan od najstarijih na  svetu, Beogradski festival dokumentarnog i kratkometražnog filma (Kratki  metar), koji svakog marta prikazuje najnovije iz oblasti animiranog,  dokumentarnog, eksperimentalnog i kratkog igranog filma, ove sezone obeležiće  svoje šezdeseto izdanje. Festival novog filma i videa ALTERNATIVE FILM-VIDEO, u  organizaciji Akademskog filmskog centra (Dom kulture Studentski grad),  kino-kluba koji je već više od 50 godina posvećen negovanju tradicije  umetničkog, autorskog i istraživačkog filma, upravo u decembru mesecu, u toku  trajanja festivala u Parizu, proslaviće svoj trideseti rođendan&ldquo;. </p>
+  <p>Iz teksta Dunje Jelenković</p>
+</div>
+</div>
+<br />
+<br />
+
+<div class="dhtmlgoodies_question"><strong class="dan"><spaN style="text-decoration:underline"><strong>SCRATCH RADIONICA</strong>
+
+</spaN></strong></div>
+<div class="dhtmlgoodies_answer">
+<div>
+
+
+<body class="MsoNormal" style="background-color:#000; color:#FFF; font-family:Arial, Helvetica, sans-serif; ">
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:34px; color:#CC0;">Scratch radionica</span>          </p>
+<p>Prijavite  se na <em>Scratch radionicu</em> Ivana Ladislava Galete u okviru festivala  ALTERNATIVE FILM/VIDEO u Domu kulture Studentski grad!</p>
+<p>Učestvujete  u kreiranju eksperimentalnog kratkog filma. Posebne kvalifikacije nisu  potrebne. Možete poneti svoj alat, flomastere, skalpele,  igle, glaspapir, selotejp&nbsp;i slično. Dođite u četvrtak 6. decembra u 16h,  zauzmite poziciju, odredite svoj prostor na 35 mm filmskoj traci i slobodno  intervenišite, grebite, lepite, bojite, samo nemojte seći filmsku traku. Na  kraju ćemo taj zajednički kreativni proizvod pogledati na velikom ekranu.  Verujte biće zabavno!</p>
+<p>Pošaljite nam e-mail sa naslovom <em>SCRATCH radionica</em> na <a href="mailto:alternative@dksg.rs">alternative@dksg.rs</a> sa  vašim imenom, prezimenom, godištem i brojem telefona. </p>
+<br />
+<p>Pogledajte kako je to  izgledalo u Zagrebu:</p>
+<p><a href="https://vimeo.com/20680849" target="_blank">https://vimeo.com/20680849</a></p>
+<p>&nbsp;</p>
+<p>"Rastegnuli  smo filmsku vrpcu po stolovima i svaki je dobio u zadatak da intervenira na  dijelu trake a da se ona ne reže. Odavde dovde je tvoj dio, a odavde na dalje  tvoj i tako redom svaki po metar vrpce. Prvi dan dvadeset metara, drugi i treći  dan po dvadeset metara i tako smo ispunili vrpcu negdje od pet minuta.  Napominjem bez sjeckanja same vrpce! Nakon  toga smo naš kolektivni uradak s velikim zanimanjem nekoliko puta pogledali na  velikom ekranu. I vjeruj, bilo je zabavno. Što se samog vremenskog rada tiče,  on je&nbsp;otprilike tekao ovako. Sastali bi se se poslije podne u 16 sati u  MMu i tamo sam svaki dan prije rada održao kratko uvodno&nbsp;predavanje o  skratchu s antologijskim primjerima svjetske produkcije.&nbsp;Iza toga smo  radili negdje dva do tri sata, nije bilo ograničenja. </p>
+<p>Dakle, kada bi se negdje našao kod tebe neki  prostor koji bi bio permanentno otvoren, svatko bi se mogao malo okušati u ovoj  filmskoj &quot;kreaciji&quot;. Pojedinac &quot;slučajni prolaznik&quot; ne mora  biti prisutan sva tri dana. Bilo tko može odraditi svoj metar filma.Netko metar  netko tri sve ovisi o situaciji. Ništa određeno. Vrpca bi bila na raspolaganju  svakome u svako doba s time da ih&nbsp;se upozori da ipak budu malo nježniji s  njom&nbsp;kako bi je mogli tehnički prikazati. Ja bi mogao skroz dežurati na  radionici ili bi me mogao netko zamjeniti dok odrađujem neke druge obaveze. Sve  je otvoreno trenutnoj situaciji. U obavijesti bi trebalo navesti da si svaki  donese neki alat; flomastere, skalpele, igle, glaspapir, selotejp&nbsp;i  slično. Ja ću sa sobom donijeti kolut 35tice na kojoj će se vršiti  intervencija. Ako ima koji svjetleći stol, nije na odmet. Ako pak dođe Vassily  onda nam i on može pomoći u ovom filmskom performansu sa svojim iskustvom.  Možda bi bilo dovoljno da se u pozivnicu ugradi link ove zagrebačke radionice  kao osnovna informacija o čemu se radi. Ne treba pretjerivati, tko dođe dođe,  ali vjerujem da će biti i onih koji će se zateći na licu mjesta, pa ćemo ih  animirati."</p>
+<p><strong>&nbsp;</strong></p>
+</div>
+</div>
+<br />
+<br />
+<div class="dhtmlgoodies_question"><strong class="dan"><spaN style="text-decoration:underline"><strong><a href="PDF/AlternativeProgram2012.pdf">PROGRAM ALTERANTIVE FILM VIDEO FESTIVALA 2012 (PDF)</a></strong>
+
+</spaN></strong></div>
+
+
+</body>
+</html>
